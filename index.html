@@ -108,10 +108,72 @@ input, select, textarea, button { font-family: inherit; }
 
 .app-footer {
   text-align: center;
-  padding: 20px;
+  padding: 24px 20px 16px;
   font-size: 12px;
   color: var(--c-text-light);
+  max-width: 900px;
+  margin: 0 auto;
 }
+
+.app-footer__sources {
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: var(--c-text-light);
+  font-style: italic;
+}
+
+.app-footer__copyright {
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.disclaimer {
+  max-width: 900px;
+  margin: 32px auto 0;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+}
+
+.disclaimer__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.disclaimer__text {
+  font-size: 12px;
+  color: var(--c-text-light);
+  line-height: 1.7;
+}
+
+.disclaimer__text p {
+  margin-bottom: 10px;
+}
+
+.disclaimer__text p:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer__toggle {
+  font-size: 13px;
+  color: var(--c-primary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-weight: 600;
+  padding: 0;
+  margin-top: 4px;
+}
+.disclaimer__toggle:hover { text-decoration: underline; }
 
 /* ─── Card ─────────────────────────────────────────────────────── */
 .card {
@@ -1995,6 +2057,64 @@ const loadPatients = () => {
   }
 };
 
+// ═══════════════════════════════════════════════════════════════════
+// DISCLAIMER
+// ═══════════════════════════════════════════════════════════════════
+
+function Disclaimer() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="disclaimer">
+      <div className="disclaimer__title">
+        <Info size={18} color="#6366f1" />
+        Conditions d'utilisation
+      </div>
+      <div className="disclaimer__text">
+        <p>
+          Cet outil est conçu comme un complément aux diagnostics ophtalmologiques,
+          aidant les médecins à choisir le traitement freinateur de myopie le plus
+          adapté à chaque patient. Il doit être utilisé en complément d'un examen
+          ophtalmologique complet et des tests diagnostiques et mesures nécessaires
+          pour les candidats aux traitements freinateurs.
+        </p>
+        {open && (
+          <>
+            <p>
+              Les résultats obtenus par le calculateur ne constituent ni une
+              recommandation médicale. Les médecins utilisant cet outil doivent
+              prendre leurs propres décisions quant au traitement approprié pour
+              leurs patients et sont seuls responsables du résultat.
+            </p>
+            <p>
+              En utilisant cet outil, vous acceptez d'indemniser et de dégager de
+              toute responsabilité ce site (ainsi que ses administrateurs, directeurs,
+              employés et prestataires tiers) pour tous dommages, coûts, réclamations
+              et pertes pouvant survenir directement ou indirectement du fait de votre
+              utilisation de l'outil, que ce soit conformément aux présentes conditions
+              ou non.
+            </p>
+            <p>
+              Dans toute la mesure permise par la loi, nous déclinons toute condition,
+              garantie et déclaration implicite quant à la qualité satisfaisante,
+              l'exactitude, l'adéquation à un usage particulier ou l'absence de
+              contrefaçon de l'Outil et des résultats ou données obtenus par son
+              intermédiaire.
+            </p>
+          </>
+        )}
+        <button className="disclaimer__toggle" onClick={() => setOpen(!open)}>
+          {open ? "Réduire ▲" : "Lire la suite ▼"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// APP
+// ═══════════════════════════════════════════════════════════════════
+
 function App() {
   const [patients, setPatients] = useState(loadPatients);
   const [currentView, setCurrentView] = useState("list");
@@ -2170,9 +2290,18 @@ function App() {
         )}
       </main>
 
+      {/* Disclaimer */}
+      <Disclaimer />
+
+      {/* Footer */}
       <footer className="app-footer">
-        Outil d'aide à la décision — Ne se substitue pas au jugement clinique.
-        Sources : IMI 2025, LAMP Study, études DIMS/HAL.
+        <div className="app-footer__sources">
+          Analyses basées sur les études de freination de la myopie
+          ainsi que les pratiques du Centre de Freination de la Myopie du CHU de Rouen.
+        </div>
+        <div className="app-footer__copyright">
+          © {new Date().getFullYear()} Dr Leconte — CHU de Rouen
+        </div>
       </footer>
     </div>
   );
