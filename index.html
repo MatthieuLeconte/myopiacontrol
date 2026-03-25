@@ -612,45 +612,11 @@ const GROWTH_THRESHOLDS = {
 };
 
 const TREATMENTS = {
-  atropine001: {
-    name: "Atropine 0,01%",
-    icon: "💧",
-    color: "#8b5cf6",
-    efficacy: "Faible (effet modeste sur LA ~0,08mm/an)",
-    description: "Collyre quotidien le soir. Peu d'effets secondaires. Bonne tolérance.",
-    ageRange: [4, 18],
-    contraindications: ["Allergie à l'atropine"],
-    sideEffects: "Photophobie minime, légère mydriase",
-    evidence: "IMI 2025 : efficacité modeste en monothérapie",
-  },
-  atropine005: {
-    name: "Atropine 0,05%",
-    icon: "💧",
-    color: "#7c3aed",
-    efficacy: "Modérée (~0,12-0,15mm/an de réduction)",
-    description: "Collyre quotidien le soir. Meilleur rapport efficacité/tolérance selon études récentes.",
-    ageRange: [4, 18],
-    contraindications: ["Allergie à l'atropine"],
-    sideEffects: "Photophobie légère à modérée, mydriase, possible gêne accommodation",
-    evidence: "LAMP Study : dose optimale selon rapport bénéfice/risque",
-  },
-  orthoK: {
-    name: "Orthokératologie",
-    icon: "👁️",
-    color: "#0ea5e9",
-    efficacy: "Bonne (~0,17-0,30mm de réduction sur 1-2 ans)",
-    description: "Lentilles rigides portées la nuit. Remodelage cornéen. Vision nette sans correction le jour.",
-    ageRange: [7, 18],
-    contraindications: ["Kératocône", "Sécheresse oculaire sévère", "Mauvaise hygiène"],
-    sideEffects: "Risque infectieux (kératite), inconfort initial",
-    evidence: "IMI 2025 : efficacité bien démontrée, ralentissement 30-50%",
-  },
   dims: {
     name: "Verres DIMS (MiYOSMART)",
     icon: "👓",
     color: "#14b8a6",
-    efficacy: "Bonne (~50-60% de ralentissement)",
-    description: "Verres ophtalmiques avec segments de défocus myopique intégré. Port quotidien comme des lunettes classiques.",
+    efficacy: "~50-60% de ralentissement",
     ageRange: [6, 18],
     contraindications: ["Strabisme non contrôlé"],
     sideEffects: "Adaptation initiale possible (halos périphériques)",
@@ -660,34 +626,61 @@ const TREATMENTS = {
     name: "Verres HAL (Stellest)",
     icon: "👓",
     color: "#06b6d4",
-    efficacy: "Bonne (~55-67% de ralentissement)",
-    description: "Verres avec technologie H.A.L.T. (nids d'abeilles). Ralentissement significatif de l'élongation axiale.",
+    efficacy: "~55-67% de ralentissement",
     ageRange: [6, 18],
     contraindications: ["Strabisme non contrôlé"],
     sideEffects: "Adaptation initiale, possible perception des micro-lentilles",
     evidence: "Étude Bao 2022 : réduction 67% élongation axiale sur 2 ans avec port >12h/j",
   },
+  orthoK: {
+    name: "Orthokératologie",
+    icon: "👁️",
+    color: "#0ea5e9",
+    efficacy: "~30-50% de ralentissement",
+    ageRange: [7, 18],
+    contraindications: ["Kératocône", "Sécheresse oculaire sévère", "Mauvaise hygiène"],
+    sideEffects: "Risque infectieux (kératite), inconfort initial",
+    evidence: "IMI 2025 : efficacité bien démontrée, ralentissement 30-50%",
+  },
   mysight: {
-    name: "Lentilles MiSight 1 day",
+    name: "Lentilles freinatrices diurnes",
     icon: "🔵",
     color: "#3b82f6",
-    efficacy: "Bonne (~50% de ralentissement)",
-    description: "Lentilles souples journalières à double foyer. Port diurne. Pratique pour les enfants actifs.",
+    efficacy: "~50% de ralentissement",
     ageRange: [8, 18],
     contraindications: ["Sécheresse oculaire", "Mauvaise hygiène", "Astigmatisme > 1D"],
     sideEffects: "Risque infectieux (faible en journalières), inconfort possible",
     evidence: "FDA approved. Étude 6 ans : maintien efficacité à long terme",
   },
+  atropine001: {
+    name: "Atropine 0,01%",
+    icon: "💧",
+    color: "#8b5cf6",
+    efficacy: "Effet modeste en monothérapie (~0,08mm/an)",
+    ageRange: [4, 18],
+    contraindications: ["Allergie à l'atropine"],
+    sideEffects: "Photophobie minime, légère mydriase",
+    evidence: "IMI 2025 : efficacité modeste en monothérapie, intérêt en bithérapie",
+  },
+  atropine005: {
+    name: "Atropine 0,05%",
+    icon: "💧",
+    color: "#7c3aed",
+    efficacy: "Modérée (~0,12-0,15mm/an de réduction)",
+    ageRange: [4, 18],
+    contraindications: ["Allergie à l'atropine"],
+    sideEffects: "Photophobie légère à modérée, mydriase, possible gêne accommodation",
+    evidence: "LAMP Study : dose optimale selon rapport bénéfice/risque",
+  },
   redLight: {
     name: "Luminothérapie rouge (RLRL)",
     icon: "🔴",
     color: "#ef4444",
-    efficacy: "Élevée (~70-80% dans études chinoises, prudence)",
-    description: "Exposition à lumière rouge basse intensité (650nm), 3 min 2x/jour. Technologie émergente prometteuse.",
+    efficacy: "~70-80% de ralentissement",
     ageRange: [6, 16],
     contraindications: ["Pathologie rétinienne", "Photosensibilité"],
     sideEffects: "Sécurité long terme en cours d'évaluation. Images rémanentes transitoires.",
-    evidence: "Études chinoises récentes très prometteuses. Prudence : recul insuffisant, pas de consensus IMI",
+    evidence: "Études chinoises récentes très prometteuses, recul insuffisant",
   },
 };
 
@@ -775,6 +768,13 @@ const calculateRiskScore = (patient) => {
   return Math.min(score, 15);
 };
 
+/** Estime la LA à 18 ans par extrapolation linéaire */
+const estimateALAt18 = (currentAL, age, growthRate) => {
+  if (!currentAL || !growthRate || growthRate <= 0) return currentAL || 0;
+  const yearsLeft = Math.max(0, 18 - age);
+  return currentAL + growthRate * yearsLeft;
+};
+
 const getRecommendedTreatments = (patient, sortedMeasurements) => {
   const age = calculateAge(patient.birthDate);
   const growthRate = calculateGrowthRate(sortedMeasurements);
@@ -786,90 +786,95 @@ const getRecommendedTreatments = (patient, sortedMeasurements) => {
   const risk = getRiskLevel(growthRate);
   const recs = [];
 
+  // Projection : LA estimée à 18 ans
+  const projectedAL = estimateALAt18(lastAL, age, growthRate);
+  // "Proche de 26" = LA actuelle >= 25 OU projection >= 26
+  const alCloseToThreshold = (lastAL && lastAL >= 25) || projectedAL >= 26;
+  const alAbove26 = lastAL && lastAL > 26;
+
+  // ── 1. Traitements optiques de première ligne ──
   if (age >= 6) {
     let priority = "standard";
     if ((lastAL && lastAL > 24) || riskScore >= 6) priority = "haute";
     if (risk.level === "high" || risk.level === "veryHigh") priority = "haute";
 
-    recs.push({
-      ...TREATMENTS.dims,
-      priority,
-      reason:
-        "Première ligne : non invasif, facile à porter, très bonne efficacité prouvée.",
-    });
-    recs.push({
-      ...TREATMENTS.hal,
-      priority,
-      reason:
-        "Première ligne : alternative aux DIMS, excellente efficacité surtout si port >12h/jour.",
-    });
+    recs.push({ ...TREATMENTS.dims, priority, reason: "Première ligne : verres freinateurs non invasifs." });
+    recs.push({ ...TREATMENTS.hal, priority, reason: "Première ligne : alternative aux DIMS, efficacité surtout si port > 12h/j." });
   }
 
   if (age >= 7 && age <= 18) {
     let priority = "standard";
     if (growthRate && growthRate > 0.25) priority = "haute";
     if (lastAL && lastAL > 25) priority = "haute";
-    recs.push({
-      ...TREATMENTS.orthoK,
-      priority,
-      reason:
-        growthRate && growthRate > 0.25
-          ? "Progression rapide : l'orthoK est très efficace pour les progresseurs rapides."
-          : "Bonne option si l'enfant peut gérer des lentilles rigides et souhaite ne pas porter de correction le jour.",
-    });
+    recs.push({ ...TREATMENTS.orthoK, priority, reason: "Lentilles rigides nocturnes, bonne efficacité." });
   }
 
   if (age >= 8) {
-    recs.push({
-      ...TREATMENTS.mysight,
-      priority: "standard",
-      reason:
-        "Alternative aux verres freinateurs pour enfants préférant les lentilles souples. Pratique pour le sport.",
-    });
+    recs.push({ ...TREATMENTS.mysight, priority: "standard", reason: "Alternative en lentilles souples freinatrices diurnes." });
   }
 
-  if (age >= 4) {
-    let priority = "standard";
-    let reason =
-      "Peut être utilisée en complément des verres freinateurs ou lentilles.";
-    if (riskScore >= 8 || (growthRate && growthRate > 0.3)) {
-      priority = "haute";
-      reason =
-        "Risque élevé : combiner avec un traitement optique (verres ou lentilles) pour effet additif.";
-    }
-    recs.push({ ...TREATMENTS.atropine001, priority, reason });
-  }
-
-  if (age >= 4) {
-    let priority = "standard";
-    let reason =
-      "Dose supérieure à envisager si la réponse à 0,01% est insuffisante.";
-    if (growthRate && growthRate > 0.35) {
-      priority = "haute";
-      reason =
-        "Progression très rapide : envisager d'emblée la dose 0,05% en association.";
-    }
-    if (lastAL && lastAL > 25.5) {
-      priority = "haute";
-      reason = "LA élevée : traitement combiné recommandé avec dose 0,05%.";
-    }
-    recs.push({ ...TREATMENTS.atropine005, priority, reason });
-  }
-
+  // ── 2. Lumière rouge ──
   if (age >= 6 && age <= 16) {
-    let priority = "expérimental";
-    let reason =
-      "Technologie prometteuse mais recul insuffisant. À discuter en complément si les autres traitements sont insuffisants.";
-    if (growthRate && growthRate > 0.35 && lastAL && lastAL > 25) {
-      priority = "à considérer";
-      reason =
-        "Progression sévère : la RLRL pourrait être envisagée en complément, sous surveillance étroite.";
+    let priority = "à considérer";
+    let reason = "Technologie prometteuse. À discuter en complément si traitements insuffisants.";
+    if (growthRate && growthRate > 0.3) {
+      priority = "haute";
+      reason = "Progression rapide : envisager la RLRL en complément.";
     }
     recs.push({ ...TREATMENTS.redLight, priority, reason });
   }
 
-  const order = { haute: 0, "à considérer": 1, standard: 2, expérimental: 3 };
-  return recs.sort((a, b) => (order[a.priority] ?? 4) - (order[b.priority] ?? 4));
+  // ── 3. Bithérapie : traitement optique + Atropine 0,01% ──
+  // Indiquée si :
+  //   - LA > 26 → d'emblée
+  //   - Après 1 an de traitement optique seul, croissance > 0,1 mm/an ET LA proche de 26 (ou projection)
+  if (age >= 4) {
+    if (alAbove26) {
+      recs.push({
+        ...TREATMENTS.atropine001,
+        priority: "haute",
+        name: "Bithérapie : optique + Atropine 0,01%",
+        reason: "LA > 26 mm : bithérapie d'emblée recommandée (DIMS/HAL/OrthoK + atropine 0,01%).",
+      });
+    } else if (growthRate && growthRate > 0.1 && alCloseToThreshold) {
+      recs.push({
+        ...TREATMENTS.atropine001,
+        priority: "haute",
+        name: "Bithérapie : optique + Atropine 0,01%",
+        reason: `Croissance ${growthRate.toFixed(2)} mm/an sous traitement, LA proche du seuil de 26 mm : associer atropine 0,01% au traitement optique.`,
+      });
+    } else {
+      recs.push({
+        ...TREATMENTS.atropine001,
+        priority: "standard",
+        name: "Bithérapie : optique + Atropine 0,01%",
+        reason: "À envisager si croissance > 0,1 mm/an après 1 an de traitement optique seul et LA proche de 26 mm.",
+      });
+    }
+  }
+
+  // ── 4. Escalade : traitement optique + Atropine 0,05% ──
+  // Indiquée si croissance > 0,1 mm/an après 1 an sous bithérapie 0,01%
+  if (age >= 4) {
+    if (alAbove26 && growthRate && growthRate > 0.1) {
+      recs.push({
+        ...TREATMENTS.atropine005,
+        priority: "haute",
+        name: "Escalade : optique + Atropine 0,05%",
+        reason: `LA > 26 mm et croissance persistante (${growthRate.toFixed(2)} mm/an) : passer à atropine 0,05%.`,
+      });
+    } else {
+      recs.push({
+        ...TREATMENTS.atropine005,
+        priority: "à considérer",
+        name: "Escalade : optique + Atropine 0,05%",
+        reason: "Si croissance > 0,1 mm/an persiste après 1 an de bithérapie avec atropine 0,01%, escalader à 0,05%.",
+      });
+    }
+  }
+
+  const order = { haute: 0, "à considérer": 1, standard: 2 };
+  return recs.sort((a, b) => (order[a.priority] ?? 3) - (order[b.priority] ?? 3));
 };
 
 const getNormForAge = (age) => {
@@ -1425,6 +1430,7 @@ function MeasurementsTab({
   sortedMeasurements,
   patient,
   onAdd,
+  onEdit,
   onDelete,
   showAdd,
   setShowAdd,
@@ -1525,6 +1531,7 @@ function MeasurementsTab({
               measurement={m}
               prevMeasurement={i < reversed.length - 1 ? reversed[i + 1] : null}
               patient={patient}
+              onEdit={onEdit}
               onDelete={onDelete}
             />
           ))}
@@ -1534,8 +1541,40 @@ function MeasurementsTab({
   );
 }
 
-function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onDelete }) {
+function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onEdit, onDelete }) {
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState(null);
+
   const handleDelete = useCallback(() => onDelete(m.id), [m.id, onDelete]);
+  const handleStartEdit = useCallback(() => {
+    setEditForm({
+      date: m.date,
+      alOD: m.alOD || "",
+      alOG: m.alOG || "",
+      refOD: m.refOD || "",
+      refOG: m.refOG || "",
+      treatment: m.treatment || "",
+      notes: m.notes || "",
+    });
+    setEditing(true);
+  }, [m]);
+
+  const handleCancelEdit = useCallback(() => { setEditing(false); setEditForm(null); }, []);
+
+  const handleSaveEdit = useCallback(() => {
+    const od = parseFloat(editForm.alOD);
+    const og = parseFloat(editForm.alOG);
+    if (!editForm.date || (isNaN(od) && isNaN(og))) return;
+    const al = !isNaN(od) && !isNaN(og) ? Math.max(od, og) : !isNaN(od) ? od : og;
+    onEdit({ ...m, ...editForm, al, alOD: isNaN(od) ? null : od, alOG: isNaN(og) ? null : og });
+    setEditing(false);
+    setEditForm(null);
+  }, [editForm, m, onEdit]);
+
+  const updateEditField = useCallback(
+    (field) => (value) => setEditForm((p) => ({ ...p, [field]: value })),
+    []
+  );
 
   const ageAt = useMemo(
     () => calculateAgeAtDate(patient.birthDate, m.date),
@@ -1553,6 +1592,37 @@ function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onDele
   }, [m, prev]);
 
   const treatment = m.treatment ? TREATMENTS[m.treatment] : null;
+
+  if (editing && editForm) {
+    return (
+      <Card className="card--form">
+        <h4 style={{ marginBottom: 12, color: COLORS.primary, fontWeight: 600 }}>Modifier la mesure</h4>
+        <div className="grid-3">
+          <Input label="Date *" type="date" value={editForm.date} onChange={updateEditField("date")} />
+          <Input label="LA OD (mm)" type="number" value={editForm.alOD} onChange={updateEditField("alOD")} step="0.01" min="20" max="35" />
+          <Input label="LA OG (mm)" type="number" value={editForm.alOG} onChange={updateEditField("alOG")} step="0.01" min="20" max="35" />
+          <Input label="Réfraction OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
+          <Input label="Réfraction OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
+          <Select
+            label="Traitement en cours"
+            value={editForm.treatment}
+            onChange={updateEditField("treatment")}
+            options={[
+              { value: "", label: "Aucun" },
+              ...Object.entries(TREATMENTS).map(([k, t]) => ({ value: k, label: t.name })),
+            ]}
+          />
+        </div>
+        <div className="mt-12">
+          <Input label="Notes" value={editForm.notes} onChange={updateEditField("notes")} placeholder="Observations..." />
+        </div>
+        <div className="flex gap-8 justify-end mt-16">
+          <Button variant="secondary" size="sm" onClick={handleCancelEdit} icon={<X size={14} />}>Annuler</Button>
+          <Button size="sm" onClick={handleSaveEdit} icon={<Save size={14} />}>Enregistrer</Button>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="measurement-row">
@@ -1588,13 +1658,14 @@ function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onDele
           )}
           {m.notes && <div className="measurement-row__notes">{m.notes}</div>}
         </div>
-        <button
-          className="delete-btn"
-          onClick={handleDelete}
-          aria-label="Supprimer cette mesure"
-        >
-          <Trash2 size={16} />
-        </button>
+        <div className="flex gap-4">
+          <button className="delete-btn" onClick={handleStartEdit} aria-label="Modifier cette mesure">
+            <Edit3 size={16} />
+          </button>
+          <button className="delete-btn" onClick={handleDelete} aria-label="Supprimer cette mesure">
+            <Trash2 size={16} />
+          </button>
+        </div>
       </div>
     </Card>
   );
@@ -1608,7 +1679,6 @@ const PRIORITY_LABELS = {
   haute: { text: "Priorité haute", color: COLORS.danger },
   "à considérer": { text: "À considérer", color: "#f97316" },
   standard: { text: "Standard", color: COLORS.success },
-  expérimental: { text: "Expérimental", color: COLORS.warning },
 };
 
 function TreatmentsTab({ recommendations }) {
@@ -1676,47 +1746,42 @@ function TreatmentCard({ rec, index, isOpen, onToggle, priorityLabel }) {
           </div>
         </div>
 
-        <div
-          className="treatment-card__reason"
-          style={{
-            background: `${rec.color}08`,
-            borderLeft: `3px solid ${rec.color}40`,
-          }}
-        >
-          {rec.reason}
-        </div>
-
         {isOpen && (
-          <div className="grid-2 mt-16" style={{ fontSize: 13 }}>
-            <div className="treatment-card__detail">
-              <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                Description
-              </div>
-              {rec.description}
+          <div style={{ marginTop: 12, fontSize: 13 }}>
+            <div
+              className="treatment-card__reason"
+              style={{
+                background: `${rec.color}08`,
+                borderLeft: `3px solid ${rec.color}40`,
+              }}
+            >
+              {rec.reason}
             </div>
-            <div className="treatment-card__detail">
-              <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                Tranche d'âge
+            <div className="grid-2 mt-12">
+              <div className="treatment-card__detail">
+                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
+                  Tranche d'âge
+                </div>
+                {rec.ageRange[0]} – {rec.ageRange[1]} ans
               </div>
-              {rec.ageRange[0]} – {rec.ageRange[1]} ans
-            </div>
-            <div className="treatment-card__detail">
-              <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                Effets secondaires
+              <div className="treatment-card__detail">
+                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
+                  Effets secondaires
+                </div>
+                {rec.sideEffects}
               </div>
-              {rec.sideEffects}
-            </div>
-            <div className="treatment-card__detail">
-              <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                Contre-indications
+              <div className="treatment-card__detail">
+                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
+                  Contre-indications
+                </div>
+                {rec.contraindications.join(", ")}
               </div>
-              {rec.contraindications.join(", ")}
-            </div>
-            <div className="treatment-card__evidence">
-              <div style={{ fontWeight: 600, marginBottom: 4, color: COLORS.info }}>
-                Niveau de preuve
+              <div className="treatment-card__evidence">
+                <div style={{ fontWeight: 600, marginBottom: 4, color: COLORS.info }}>
+                  Niveau de preuve
+                </div>
+                {rec.evidence}
               </div>
-              {rec.evidence}
             </div>
           </div>
         )}
@@ -1758,14 +1823,18 @@ const LEGEND_ITEMS = [
 
 function ChartTab({ sortedMeasurements, patient }) {
   const data = useMemo(() => {
-    return sortedMeasurements.map((m) => {
+    if (sortedMeasurements.length === 0) return [];
+
+    const birth = new Date(patient.birthDate + "T00:00:00");
+
+    // Build points from measurements
+    const measurePoints = sortedMeasurements.map((m) => {
+      const d = new Date(m.date + "T00:00:00");
       const ageAt = calculateAgeAtDate(patient.birthDate, m.date);
       const norm = getNormForAge(ageAt);
       return {
-        date: new Date(m.date + "T00:00:00").toLocaleDateString("fr-FR", {
-          month: "short",
-          year: "2-digit",
-        }),
+        ts: d.getTime(),
+        date: d.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
         al: m.al,
         alOD: m.alOD,
         alOG: m.alOG,
@@ -1774,6 +1843,40 @@ function ChartTab({ sortedMeasurements, patient }) {
         p90: norm.p90,
       };
     });
+
+    // Add 1 year before first measurement and 1 year after last
+    const firstDate = new Date(sortedMeasurements[0].date + "T00:00:00");
+    const lastDate = new Date(sortedMeasurements[sortedMeasurements.length - 1].date + "T00:00:00");
+
+    const beforeDate = new Date(firstDate);
+    beforeDate.setFullYear(beforeDate.getFullYear() - 1);
+    const afterDate = new Date(lastDate);
+    afterDate.setFullYear(afterDate.getFullYear() + 1);
+
+    const ageBefore = (beforeDate - birth) / (365.25 * 24 * 60 * 60 * 1000);
+    const ageAfter = (afterDate - birth) / (365.25 * 24 * 60 * 60 * 1000);
+    const normBefore = getNormForAge(ageBefore);
+    const normAfter = getNormForAge(ageAfter);
+
+    const pointBefore = {
+      ts: beforeDate.getTime(),
+      date: beforeDate.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
+      al: null, alOD: null, alOG: null,
+      emmetropic: normBefore.emmetropic,
+      p75: normBefore.p75,
+      p90: normBefore.p90,
+    };
+
+    const pointAfter = {
+      ts: afterDate.getTime(),
+      date: afterDate.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
+      al: null, alOD: null, alOG: null,
+      emmetropic: normAfter.emmetropic,
+      p75: normAfter.p75,
+      p90: normAfter.p90,
+    };
+
+    return [pointBefore, ...measurePoints, pointAfter].sort((a, b) => a.ts - b.ts);
   }, [sortedMeasurements, patient.birthDate]);
 
   if (data.length === 0) {
@@ -1811,11 +1914,11 @@ function ChartTab({ sortedMeasurements, patient }) {
               <Line type="monotone" dataKey="p75" stroke={COLORS.warning} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P75" />
               <Line type="monotone" dataKey="p90" stroke={COLORS.danger} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P90" />
 
-              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA (max)" />
+              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA (max)" connectNulls />
               {hasODOG && (
                 <>
-                  <Line type="monotone" dataKey="alOD" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} name="LA OD" />
-                  <Line type="monotone" dataKey="alOG" stroke="#06b6d4" strokeWidth={2} dot={{ fill: "#06b6d4", r: 4 }} name="LA OG" />
+                  <Line type="monotone" dataKey="alOD" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} name="LA OD" connectNulls />
+                  <Line type="monotone" dataKey="alOG" stroke="#06b6d4" strokeWidth={2} dot={{ fill: "#06b6d4", r: 4 }} name="LA OG" connectNulls />
                 </>
               )}
 
@@ -1869,6 +1972,7 @@ function PatientDetail({
   onEdit,
   onDelete,
   onAddMeasurement,
+  onEditMeasurement,
   onDeleteMeasurement,
 }) {
   const [showAddMeasure, setShowAddMeasure] = useState(false);
@@ -2118,6 +2222,7 @@ function PatientDetail({
           sortedMeasurements={sorted}
           patient={patient}
           onAdd={handleAddMeasure}
+          onEdit={onEditMeasurement}
           onDelete={onDeleteMeasurement}
           showAdd={showAddMeasure}
           setShowAdd={setShowAddMeasure}
@@ -2208,16 +2313,53 @@ function Disclaimer() {
 // APP
 // ═══════════════════════════════════════════════════════════════════
 
+const getPatientIdFromURL = () => {
+  const path = window.location.pathname.replace(/^\/+/, "");
+  return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
+};
+
 function App() {
   const [patients, setPatients] = useState(loadPatients);
-  const [currentView, setCurrentView] = useState("list");
-  const [selectedId, setSelectedId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const initialPatientId = getPatientIdFromURL();
+  const initialPatient = initialPatientId
+    ? loadPatients().find((p) => p.patientId === initialPatientId)
+    : null;
+
+  const [currentView, setCurrentView] = useState(initialPatient ? "detail" : "list");
+  const [selectedId, setSelectedId] = useState(initialPatient ? initialPatient.id : null);
 
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
     } catch { }
+  }, [patients]);
+
+  const pushPatientURL = useCallback((patientId) => {
+    if (patientId) {
+      window.history.pushState({ patientId }, "", "/" + patientId);
+    } else {
+      window.history.pushState({}, "", "/");
+    }
+  }, []);
+
+  useEffect(() => {
+    const onPopState = (e) => {
+      const pid = e.state?.patientId || getPatientIdFromURL();
+      if (pid) {
+        const found = patients.find((p) => p.patientId === pid);
+        if (found) {
+          setSelectedId(found.id);
+          setCurrentView("detail");
+          return;
+        }
+      }
+      setSelectedId(null);
+      setCurrentView("list");
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, [patients]);
 
   const selectedPatient = useMemo(
@@ -2243,7 +2385,8 @@ function App() {
     ]);
     setSelectedId(id);
     setCurrentView("detail");
-  }, []);
+    pushPatientURL(patientId);
+  }, [pushPatientURL]);
 
   const updatePatient = useCallback((updated) => {
     setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
@@ -2253,7 +2396,8 @@ function App() {
     setPatients((prev) => prev.filter((p) => p.id !== id));
     setSelectedId(null);
     setCurrentView("list");
-  }, []);
+    pushPatientURL(null);
+  }, [pushPatientURL]);
 
   const addMeasurement = useCallback((patientId, measurement) => {
     setPatients((prev) =>
@@ -2264,6 +2408,18 @@ function App() {
           { ...measurement, id: generateId() },
         ]);
         return { ...p, measurements: newMeasurements };
+      })
+    );
+  }, []);
+
+  const editMeasurement = useCallback((patientId, updatedMeasurement) => {
+    setPatients((prev) =>
+      prev.map((p) => {
+        if (p.id !== patientId) return p;
+        const updated = (p.measurements || []).map((m) =>
+          m.id === updatedMeasurement.id ? updatedMeasurement : m
+        );
+        return { ...p, measurements: sortMeasurements(updated) };
       })
     );
   }, []);
@@ -2281,14 +2437,16 @@ function App() {
   const goToList = useCallback(() => {
     setCurrentView("list");
     setSelectedId(null);
-  }, []);
+    pushPatientURL(null);
+  }, [pushPatientURL]);
 
   const goToAdd = useCallback(() => setCurrentView("add"), []);
 
   const goToDetail = useCallback((patient) => {
     setSelectedId(patient.id);
     setCurrentView("detail");
-  }, []);
+    pushPatientURL(patient.patientId);
+  }, [pushPatientURL]);
 
   const goToEdit = useCallback(() => setCurrentView("editPatient"), []);
 
@@ -2307,6 +2465,11 @@ function App() {
   const handleAddMeasurement = useCallback(
     (m) => { if (selectedId) addMeasurement(selectedId, m); },
     [selectedId, addMeasurement]
+  );
+
+  const handleEditMeasurement = useCallback(
+    (updated) => { if (selectedId) editMeasurement(selectedId, updated); },
+    [selectedId, editMeasurement]
   );
 
   const handleDeleteMeasurement = useCallback(
@@ -2381,6 +2544,7 @@ function App() {
             onEdit={goToEdit}
             onDelete={handleDelete}
             onAddMeasurement={handleAddMeasurement}
+            onEditMeasurement={handleEditMeasurement}
             onDeleteMeasurement={handleDeleteMeasurement}
           />
         )}
