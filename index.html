@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyopiaControl - Suivi de la myopie & traitements freinateurs</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- CDN Imports -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -445,6 +443,7 @@ input, select, textarea, button { font-family: inherit; }
   font-weight: 700;
   background: linear-gradient(135deg, var(--c-primary), var(--c-primary-light));
   flex-shrink: 0;
+  text-transform: uppercase;
 }
 .avatar--sm { width: 48px; height: 48px; border-radius: 14px; font-size: 18px; }
 .avatar--lg { width: 64px; height: 64px; border-radius: var(--radius-xl); font-size: 24px; }
@@ -567,6 +566,12 @@ input, select, textarea, button { font-family: inherit; }
   <script type="text/babel">
 const { useState, useEffect, useCallback, useMemo, useId } = React;
 const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } = window.Recharts;
+
+// INITIALISATION SUPABASE
+const SUPABASE_URL = 'https://lmmgqhxoeadgotimmxuv.supabase.co';
+const SUPABASE_KEY = 'lmmgqhxoeadgotimmxuv';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 
 // ═══════════════════════════════════════════════════════════════════
 // CONSTANTS & UTILITIES
@@ -692,21 +697,30 @@ const getLocalDateString = (date = new Date()) => {
   return `${y}-${m}-${d}`;
 };
 
-const calculateAge = (birthDate) => {
+// --- GESTION DES DATES MOIS/ANNÉE SÉCURISÉE ---
+const parseBirthMonth = (ym) => {
+  if (!ym) return new Date();
+  // Sécurité : si la donnée locale est une ancienne date complète (YYYY-MM-DD), on la prend, sinon on rajoute -01 (YYYY-MM-01)
+  const dateStr = ym.length === 7 ? `${ym}-01` : ym;
+  return new Date(dateStr + "T00:00:00");
+};
+
+const calculateAge = (birthMonth) => {
   const today = new Date();
-  const birth = new Date(birthDate + "T00:00:00");
+  const birth = parseBirthMonth(birthMonth);
   let age = today.getFullYear() - birth.getFullYear();
   const m = today.getMonth() - birth.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
   return age;
 };
 
-const calculateAgeAtDate = (birthDate, measureDate) => {
-  const birth = new Date(birthDate + "T00:00:00");
+const calculateAgeAtDate = (birthMonth, measureDate) => {
+  const birth = parseBirthMonth(birthMonth);
   const d = new Date(measureDate + "T00:00:00");
   const diffMs = d - birth;
   return diffMs / (365.25 * 24 * 60 * 60 * 1000);
 };
+// ----------------------------------------------
 
 const sortMeasurements = (measurements) => {
   if (!measurements) return [];
@@ -1273,18 +1287,20 @@ function PatientForm({ patient, onSave, onCancel }) {
 
       <Card className="mb-20">
         <h3 className="flex items-center gap-8 mb-16" style={{ fontSize: 16, fontWeight: 600 }}>
-          <User size={18} color={COLORS.primary} /> Identité
+          <User size={18} color={COLORS.primary} /> Identité pseudonymisée
         </h3>
         <div className="grid-2">
           <Input label="Praticien" value={form.surgeon} onChange={update("surgeon")} placeholder="Nom du praticien" />
-          <Input label="Initiales patient *" value={form.initials} onChange={update("initials")} placeholder="Ex: ML" />
+          <Input label="Initiales patient *" value={form.initials} onChange={update("initials")} placeholder="Ex: ML" required />
           {form.patientId && (
             <div className="form-group">
               <label className="form-label">Id patient</label>
               <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default", userSelect: "all" }}>{form.patientId}</div>
             </div>
           )}
-          <Input label="Date de naissance *" type="date" value={form.birthDate} onChange={update("birthDate")} />
+          {/* MODIFICATION ICI : Type passe en 'month' */}
+          <Input label="Mois et année de naissance *" type="month" value={form.birthDate} onChange={update("birthDate")} required />
+          
           <Select
             label="Genre *"
             value={form.gender}
@@ -1296,7 +1312,7 @@ function PatientForm({ patient, onSave, onCancel }) {
           />
           {form.birthDate && (
             <div className="form-group">
-              <label className="form-label">Âge</label>
+              <label className="form-label">Âge estimé</label>
               <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default" }}>{calculateAge(form.birthDate)} ans</div>
             </div>
           )}
@@ -1490,8 +1506,8 @@ function MeasurementsTab({
           </h4>
           <div className="grid-3">
             <Input label="Date *" type="date" value={nm.date} onChange={updateField("date")} />
-            <Input label="LA œil droit (mm)" type="number" value={nm.alOD} onChange={updateField("alOD")} placeholder="ex: 24.50" step="0.01" min="20" max="35" />
-            <Input label="LA œil gauche (mm)" type="number" value={nm.alOG} onChange={updateField("alOG")} placeholder="ex: 24.30" step="0.01" min="20" max="35" />
+            <Input label="LA OD (mm)" type="number" value={nm.alOD} onChange={updateField("alOD")} placeholder="ex: 24.50" step="0.01" min="20" max="35" />
+            <Input label="LA OG (mm)" type="number" value={nm.alOG} onChange={updateField("alOG")} placeholder="ex: 24.30" step="0.01" min="20" max="35" />
             <Input label="Réfraction OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
             <Input label="Réfraction OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
             <Select
@@ -1825,7 +1841,7 @@ function ChartTab({ sortedMeasurements, patient }) {
   const data = useMemo(() => {
     if (sortedMeasurements.length === 0) return [];
 
-    const birth = new Date(patient.birthDate + "T00:00:00");
+    const birth = parseBirthMonth(patient.birthDate);
 
     // Build points from measurements
     const measurePoints = sortedMeasurements.map((m) => {
@@ -2060,8 +2076,9 @@ function PatientDetail({
                 <span className="flex items-center gap-4">
                   <Calendar size={14} /> {age} ans ({patient.gender === "F" ? "F" : "M"})
                 </span>
+                {/* MODIFICATION ICI : Affichage du mois et de l'année uniquement */}
                 <span className="flex items-center gap-4">
-                  <Baby size={14} /> Né(e) le {new Date(patient.birthDate + "T00:00:00").toLocaleDateString("fr-FR")}
+                  <Baby size={14} /> Né(e) en {parseBirthMonth(patient.birthDate).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
                 </span>
                 {patient.surgeon && (
                   <span className="flex items-center gap-4">
@@ -2241,19 +2258,69 @@ function PatientDetail({
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// APP ROOT
+// AUTHENTICATION COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 
-const STORAGE_KEY = "myopia-tracker-patients";
+function Auth() {
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState(null);
 
-const loadPatients = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+
+    const { error } = await supabase.auth.signInWithOtp({ 
+      email,
+      options: {
+        emailRedirectTo: window.location.origin,
+      }
+    });
+
+    if (error) {
+      setMessage({ type: 'danger', text: error.message });
+    } else {
+      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien magique vous a été envoyé.' });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: 20 }}>
+      <Card style={{ maxWidth: 400, width: '100%' }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+          <div className="avatar avatar--lg" style={{ margin: '0 auto 16px', background: 'var(--c-primary)' }}>👁️</div>
+          <h2 style={{ fontSize: 24, fontWeight: 700 }}>MyopiaControl</h2>
+          <p style={{ color: 'var(--c-text-light)', fontSize: 14 }}>Connexion sécurisée pour les praticiens</p>
+        </div>
+
+        {message && (
+          <div className={`alert alert--${message.type} mb-16`}>
+            <div className="alert__body">{message.text}</div>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Input 
+            label="Email professionnel" 
+            type="email" 
+            value={email} 
+            onChange={setEmail} 
+            placeholder="docteur@cabinet.fr" 
+            required 
+          />
+          <Button 
+            disabled={loading || !email} 
+            style={{ justifyContent: 'center', marginTop: 8 }}
+          >
+            {loading ? 'Envoi en cours...' : 'Recevoir le lien magique'}
+          </Button>
+        </form>
+      </Card>
+    </div>
+  );
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // DISCLAIMER
@@ -2313,28 +2380,66 @@ function Disclaimer() {
 // APP
 // ═══════════════════════════════════════════════════════════════════
 
-const getPatientIdFromURL = () => {
-  const path = window.location.pathname.replace(/^\/+/, "");
-  return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
-};
-
 function App() {
-  const [patients, setPatients] = useState(loadPatients);
+  const [session, setSession] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Gestion du routage
+  const getPatientIdFromURL = useCallback(() => {
+    const path = window.location.pathname.replace(/^\/+/, "");
+    return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
+  }, []);
 
-  const initialPatientId = getPatientIdFromURL();
-  const initialPatient = initialPatientId
-    ? loadPatients().find((p) => p.patientId === initialPatientId)
-    : null;
+  const [currentView, setCurrentView] = useState("list");
+  const [selectedId, setSelectedId] = useState(null);
 
-  const [currentView, setCurrentView] = useState(initialPatient ? "detail" : "list");
-  const [selectedId, setSelectedId] = useState(initialPatient ? initialPatient.id : null);
-
+  // 1. GESTION DE LA SESSION SUPABASE
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(patients));
-    } catch { }
-  }, [patients]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsInitializing(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // 2. CHARGEMENT DES PATIENTS (Seulement si connecté)
+  useEffect(() => {
+    if (!session) return;
+
+    const fetchPatients = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from('patients').select('*');
+      if (!error) {
+        setPatients(data || []);
+        
+        // Routage initial si un ID est dans l'URL
+        const initialPatientId = getPatientIdFromURL();
+        if (initialPatientId && data) {
+          const found = data.find((p) => p.patientId === initialPatientId);
+          if (found) {
+            setSelectedId(found.id);
+            setCurrentView("detail");
+          }
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchPatients();
+  }, [session, getPatientIdFromURL]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const pushPatientURL = useCallback((patientId) => {
     if (patientId) {
@@ -2360,7 +2465,7 @@ function App() {
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [patients]);
+  }, [patients, getPatientIdFromURL]);
 
   const selectedPatient = useMemo(
     () => patients.find((p) => p.id === selectedId) || null,
@@ -2376,63 +2481,79 @@ function App() {
     );
   }, [patients, searchTerm]);
 
-  const addPatient = useCallback((data) => {
+  // ─── CRUD SUPABASE ───
+
+  const addPatient = useCallback(async (data) => {
     const patientId = data.patientId || generatePatientId();
     const id = generateId();
-    setPatients((prev) => [
-      ...prev,
-      { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() },
-    ]);
+    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() };
+    
+    setPatients((prev) => [...prev, newPatient]);
     setSelectedId(id);
     setCurrentView("detail");
     pushPatientURL(patientId);
+
+    const { error } = await supabase.from('patients').insert([newPatient]);
+    if (error) console.error("Erreur d'ajout :", error);
   }, [pushPatientURL]);
 
-  const updatePatient = useCallback((updated) => {
+  const updatePatient = useCallback(async (updated) => {
     setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    const { error } = await supabase.from('patients').update(updated).eq('id', updated.id);
+    if (error) console.error("Erreur de mise à jour :", error);
   }, []);
 
-  const deletePatient = useCallback((id) => {
+  const deletePatient = useCallback(async (id) => {
     setPatients((prev) => prev.filter((p) => p.id !== id));
     setSelectedId(null);
     setCurrentView("list");
     pushPatientURL(null);
+
+    const { error } = await supabase.from('patients').delete().eq('id', id);
+    if (error) console.error("Erreur de suppression :", error);
   }, [pushPatientURL]);
 
   const addMeasurement = useCallback((patientId, measurement) => {
-    setPatients((prev) =>
-      prev.map((p) => {
-        if (p.id !== patientId) return p;
-        const newMeasurements = sortMeasurements([
-          ...(p.measurements || []),
-          { ...measurement, id: generateId() },
-        ]);
-        return { ...p, measurements: newMeasurements };
-      })
-    );
-  }, []);
+    setPatients((prev) => {
+      const patient = prev.find(p => p.id === patientId);
+      if (!patient) return prev;
+      const newMeasurements = sortMeasurements([
+        ...(patient.measurements || []),
+        { ...measurement, id: generateId() },
+      ]);
+      const updatedPatient = { ...patient, measurements: newMeasurements };
+      updatePatient(updatedPatient);
+      return prev.map(p => p.id === patientId ? updatedPatient : p);
+    });
+  }, [updatePatient]);
 
   const editMeasurement = useCallback((patientId, updatedMeasurement) => {
-    setPatients((prev) =>
-      prev.map((p) => {
-        if (p.id !== patientId) return p;
-        const updated = (p.measurements || []).map((m) =>
-          m.id === updatedMeasurement.id ? updatedMeasurement : m
-        );
-        return { ...p, measurements: sortMeasurements(updated) };
-      })
-    );
-  }, []);
+    setPatients((prev) => {
+      const patient = prev.find(p => p.id === patientId);
+      if (!patient) return prev;
+      const updatedList = (patient.measurements || []).map((m) =>
+        m.id === updatedMeasurement.id ? updatedMeasurement : m
+      );
+      const updatedPatient = { ...patient, measurements: sortMeasurements(updatedList) };
+      updatePatient(updatedPatient);
+      return prev.map(p => p.id === patientId ? updatedPatient : p);
+    });
+  }, [updatePatient]);
 
   const deleteMeasurement = useCallback((patientId, measurementId) => {
-    setPatients((prev) =>
-      prev.map((p) =>
-        p.id === patientId
-          ? { ...p, measurements: (p.measurements || []).filter((m) => m.id !== measurementId) }
-          : p
-      )
-    );
-  }, []);
+    setPatients((prev) => {
+      const patient = prev.find(p => p.id === patientId);
+      if (!patient) return prev;
+      const updatedPatient = { 
+        ...patient, 
+        measurements: (patient.measurements || []).filter((m) => m.id !== measurementId) 
+      };
+      updatePatient(updatedPatient);
+      return prev.map(p => p.id === patientId ? updatedPatient : p);
+    });
+  }, [updatePatient]);
+
+  // ─── NAVIGATION ───
 
   const goToList = useCallback(() => {
     setCurrentView("list");
@@ -2477,6 +2598,14 @@ function App() {
     [selectedId, deleteMeasurement]
   );
 
+  if (isInitializing) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#64748b' }}>Chargement sécurisé...</div>;
+  }
+
+  if (!session) {
+    return <Auth />;
+  }
+
   return (
     <div className="app-root">
       <header className="app-header">
@@ -2512,48 +2641,61 @@ function App() {
               Nouveau patient
             </Button>
           )}
+          <Button
+            className="btn--header"
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            style={{ marginLeft: 16 }}
+          >
+            Déconnexion
+          </Button>
         </div>
       </header>
 
       <main className="app-main">
-        {currentView === "list" && (
-          <PatientList
-            patients={filteredPatients}
-            searchTerm={searchTerm}
-            onSearch={setSearchTerm}
-            onSelect={goToDetail}
-            onAdd={goToAdd}
-          />
-        )}
+        {loading ? (
+           <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>Chargement des dossiers médicaux...</div>
+        ) : (
+          <>
+            {currentView === "list" && (
+              <PatientList
+                patients={filteredPatients}
+                searchTerm={searchTerm}
+                onSearch={setSearchTerm}
+                onSelect={goToDetail}
+                onAdd={goToAdd}
+              />
+            )}
 
-        {currentView === "add" && (
-          <PatientForm onSave={addPatient} onCancel={goToList} />
-        )}
+            {currentView === "add" && (
+              <PatientForm onSave={addPatient} onCancel={goToList} />
+            )}
 
-        {currentView === "editPatient" && selectedPatient && (
-          <PatientForm
-            patient={selectedPatient}
-            onSave={handleSaveEdit}
-            onCancel={() => setCurrentView("detail")}
-          />
-        )}
+            {currentView === "editPatient" && selectedPatient && (
+              <PatientForm
+                patient={selectedPatient}
+                onSave={handleSaveEdit}
+                onCancel={() => setCurrentView("detail")}
+              />
+            )}
 
-        {currentView === "detail" && selectedPatient && (
-          <PatientDetail
-            patient={selectedPatient}
-            onEdit={goToEdit}
-            onDelete={handleDelete}
-            onAddMeasurement={handleAddMeasurement}
-            onEditMeasurement={handleEditMeasurement}
-            onDeleteMeasurement={handleDeleteMeasurement}
-          />
+            {currentView === "detail" && selectedPatient && (
+              <PatientDetail
+                patient={selectedPatient}
+                onEdit={goToEdit}
+                onDelete={handleDelete}
+                onAddMeasurement={handleAddMeasurement}
+                onEditMeasurement={handleEditMeasurement}
+                onDeleteMeasurement={handleDeleteMeasurement}
+              />
+            )}
+          </>
         )}
       </main>
 
-      {/* Disclaimer */}
       <Disclaimer />
 
-      {/* Footer */}
       <footer className="app-footer">
         <div className="app-footer__sources">
           Analyses basées sur les études de freination de la myopie
