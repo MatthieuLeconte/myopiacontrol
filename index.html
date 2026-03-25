@@ -569,7 +569,7 @@ const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsiv
 
 // INITIALISATION SUPABASE
 const SUPABASE_URL = 'https://lmmgqhxoeadgotimmxuv.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_Jjj5i3wYG4hmuT1xdatIsQ_RMMJLyb0';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtbWdxaHhvZWFkZ290aW1teHV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzM1MDUsImV4cCI6MjA5MDAwOTUwNX0.IC2tBvR_B7fM5XcU7fdydyQ8bz6p34fUZtQIREH7RTE';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
@@ -698,11 +698,40 @@ const getLocalDateString = (date = new Date()) => {
 };
 
 // --- GESTION DES DATES MOIS/ANNÉE SÉCURISÉE ---
+// Accepte : "05.12", "05-12", "05/12", "05.2012", "05-2012", "05/2012", "2012-05" (format month input)
+const parseBirthInput = (raw) => {
+  if (!raw) return null;
+  const s = raw.trim();
+  // Format ISO "YYYY-MM" ou "YYYY-MM-DD" (ancien format)
+  if (/^\d{4}[-/]\d{1,2}/.test(s)) {
+    const dateStr = s.length === 7 ? s + "-01" : (s.length === 10 ? s : s + "-01");
+    return new Date(dateStr + "T00:00:00");
+  }
+  // Formats MM.YY, MM-YY, MM/YY, MM.YYYY, MM-YYYY, MM/YYYY
+  const m = s.match(/^(\d{1,2})[.\-/](\d{2,4})$/);
+  if (m) {
+    let month = parseInt(m[1], 10);
+    let year = parseInt(m[2], 10);
+    if (year < 100) year += 2000;
+    if (month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
+      return new Date(year, month - 1, 1);
+    }
+  }
+  return null;
+};
+
+// Normalise l'entrée utilisateur vers le format stocké "YYYY-MM"
+const normalizeBirthInput = (raw) => {
+  const d = parseBirthInput(raw);
+  if (!d || isNaN(d.getTime())) return raw;
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return yyyy + "-" + mm;
+};
+
 const parseBirthMonth = (ym) => {
-  if (!ym) return new Date();
-  // Sécurité : si la donnée locale est une ancienne date complète (YYYY-MM-DD), on la prend, sinon on rajoute -01 (YYYY-MM-01)
-  const dateStr = ym.length === 7 ? `${ym}-01` : ym;
-  return new Date(dateStr + "T00:00:00");
+  const d = parseBirthInput(ym);
+  return d && !isNaN(d.getTime()) ? d : new Date();
 };
 
 const calculateAge = (birthMonth) => {
@@ -999,6 +1028,7 @@ const Input = ({
   type = "text",
   value,
   onChange,
+  onBlur,
   placeholder,
   min,
   max,
@@ -1026,6 +1056,7 @@ const Input = ({
         type={type}
         value={value}
         onChange={handleChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         min={min}
         max={max}
@@ -1255,7 +1286,9 @@ function PatientForm({ patient, onSave, onCancel }) {
   );
 
   const handleSave = useCallback(() => {
-    if (form.initials && form.birthDate) onSave(form);
+    if (form.initials && form.birthDate && parseBirthInput(form.birthDate)) {
+      onSave({ ...form, birthDate: normalizeBirthInput(form.birthDate) });
+    }
   }, [form, onSave]);
 
   const riskScore = useMemo(
@@ -1263,7 +1296,7 @@ function PatientForm({ patient, onSave, onCancel }) {
     [form]
   );
 
-  const isValid = form.initials && form.birthDate;
+  const isValid = form.initials && form.birthDate && parseBirthInput(form.birthDate) !== null;
 
   const riskColor =
     riskScore >= 10
@@ -1298,8 +1331,7 @@ function PatientForm({ patient, onSave, onCancel }) {
               <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default", userSelect: "all" }}>{form.patientId}</div>
             </div>
           )}
-          {/* MODIFICATION ICI : Type passe en 'month' */}
-          <Input label="Mois et année de naissance *" type="month" value={form.birthDate} onChange={update("birthDate")} required />
+          <Input label="Mois et année de naissance *" type="text" value={form.birthDate} onChange={update("birthDate")} placeholder="Ex: 05/2012, 05-12, 05.2012" onBlur={() => { const n = normalizeBirthInput(form.birthDate); if (n !== form.birthDate) setForm(f => ({...f, birthDate: n})); }} required />
           
           <Select
             label="Genre *"
@@ -1374,19 +1406,11 @@ function PatientForm({ patient, onSave, onCancel }) {
             ]}
           />
           <Input
-            label="Réfraction actuelle (dioptries)"
+            label="Équivalent sphérique actuel (dioptries)"
             type="number"
             value={form.riskFactors.currentRefraction}
             onChange={updateRF("currentRefraction")}
             placeholder="ex: -2.50"
-            step="0.25"
-          />
-          <Input
-            label="Progression annuelle (D/an)"
-            type="number"
-            value={form.riskFactors.annualProgression}
-            onChange={updateRF("annualProgression")}
-            placeholder="ex: -0.75"
             step="0.25"
           />
         </div>
@@ -1508,8 +1532,8 @@ function MeasurementsTab({
             <Input label="Date *" type="date" value={nm.date} onChange={updateField("date")} />
             <Input label="LA OD (mm)" type="number" value={nm.alOD} onChange={updateField("alOD")} placeholder="ex: 24.50" step="0.01" min="20" max="35" />
             <Input label="LA OG (mm)" type="number" value={nm.alOG} onChange={updateField("alOG")} placeholder="ex: 24.30" step="0.01" min="20" max="35" />
-            <Input label="Réfraction OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
-            <Input label="Réfraction OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
+            <Input label="Éq. sphérique OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
+            <Input label="Éq. sphérique OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
             <Select
               label="Traitement en cours"
               value={nm.treatment}
@@ -1617,8 +1641,8 @@ function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onEdit
           <Input label="Date *" type="date" value={editForm.date} onChange={updateEditField("date")} />
           <Input label="LA OD (mm)" type="number" value={editForm.alOD} onChange={updateEditField("alOD")} step="0.01" min="20" max="35" />
           <Input label="LA OG (mm)" type="number" value={editForm.alOG} onChange={updateEditField("alOG")} step="0.01" min="20" max="35" />
-          <Input label="Réfraction OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
-          <Input label="Réfraction OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
+          <Input label="Éq. sphérique OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
+          <Input label="Éq. sphérique OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
           <Select
             label="Traitement en cours"
             value={editForm.treatment}
@@ -1811,12 +1835,11 @@ function TreatmentCard({ rec, index, isOpen, onToggle, priorityLabel }) {
 // ═══════════════════════════════════════════════════════════════════
 
 const TOOLTIP_LABELS = {
-  al: "LA (max)",
+  al: "LA",
   alOD: "LA OD",
   alOG: "LA OG",
   emmetropic: "Norme emmétrope",
   p75: "P75",
-  p90: "P90",
 };
 
 const tooltipFormatter = (value, name) => [
@@ -1915,7 +1938,7 @@ function ChartTab({ sortedMeasurements, patient }) {
           Évolution de la longueur axiale
         </h3>
         <p style={{ marginBottom: 20, fontSize: 13, color: "#64748b" }}>
-          Courbe de suivi avec normes emmétropes (vert) et seuils (P75, P90)
+          Courbe de suivi avec normes emmétropes (vert) et seuil P75
         </p>
         <div style={{ width: "100%", height: 400 }}>
           <ResponsiveContainer>
@@ -1928,9 +1951,8 @@ function ChartTab({ sortedMeasurements, patient }) {
 
               <Line type="monotone" dataKey="emmetropic" stroke={COLORS.success} strokeDasharray="5 5" strokeWidth={1.5} dot={false} name="Norme emmétrope" />
               <Line type="monotone" dataKey="p75" stroke={COLORS.warning} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P75" />
-              <Line type="monotone" dataKey="p90" stroke={COLORS.danger} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P90" />
 
-              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA (max)" connectNulls />
+              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA" connectNulls />
               {hasODOG && (
                 <>
                   <Line type="monotone" dataKey="alOD" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} name="LA OD" connectNulls />
@@ -2097,7 +2119,7 @@ function PatientDetail({
 
         {/* Shareable link */}
         <div className="flex items-center gap-8 mt-16" style={{ padding: "10px 14px", background: "#f1f5f9", borderRadius: 8 }}>
-          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien patient :</span>
+          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien :</span>
           <code style={{ fontSize: 14, color: COLORS.primary, fontWeight: 600, flex: 1, wordBreak: "break-all" }}>{shareUrl}</code>
           <button
             onClick={handleCopyLink}
