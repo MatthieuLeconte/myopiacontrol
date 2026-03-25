@@ -569,7 +569,7 @@ const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsiv
 
 // INITIALISATION SUPABASE
 const SUPABASE_URL = 'https://lmmgqhxoeadgotimmxuv.supabase.co';
-const SUPABASE_KEY = 'lmmgqhxoeadgotimmxuv';
+const SUPABASE_KEY = 'sb_publishable_Jjj5i3wYG4hmuT1xdatIsQ_RMMJLyb0';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
@@ -2281,7 +2281,7 @@ function Auth() {
     if (error) {
       setMessage({ type: 'danger', text: error.message });
     } else {
-      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien magique vous a été envoyé.' });
+      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien vous a été envoyé.' });
     }
     setLoading(false);
   };
@@ -2314,7 +2314,7 @@ function Auth() {
             disabled={loading || !email} 
             style={{ justifyContent: 'center', marginTop: 8 }}
           >
-            {loading ? 'Envoi en cours...' : 'Recevoir le lien magique'}
+            {loading ? 'Envoi en cours...' : 'Recevoir le lien de connexion'}
           </Button>
         </form>
       </Card>
@@ -2486,8 +2486,9 @@ function App() {
   const addPatient = useCallback(async (data) => {
     const patientId = data.patientId || generatePatientId();
     const id = generateId();
-    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() };
-    
+    const user_id = session?.user?.id;
+    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString(), user_id };
+
     setPatients((prev) => [...prev, newPatient]);
     setSelectedId(id);
     setCurrentView("detail");
@@ -2495,7 +2496,7 @@ function App() {
 
     const { error } = await supabase.from('patients').insert([newPatient]);
     if (error) console.error("Erreur d'ajout :", error);
-  }, [pushPatientURL]);
+  }, [pushPatientURL, session]);
 
   const updatePatient = useCallback(async (updated) => {
     setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
