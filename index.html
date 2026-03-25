@@ -6,7 +6,7 @@
   <title>MyopiaControl - Suivi de la myopie & traitements freinateurs</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -567,11 +567,10 @@ input, select, textarea, button { font-family: inherit; }
 const { useState, useEffect, useCallback, useMemo, useId } = React;
 const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } = window.Recharts;
 
-// INITIALISATION SUPABASE
-const SUPABASE_URL = 'https://lmmgqhxoeadgotimmxuv.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtbWdxaHhvZWFkZ290aW1teHV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzM1MDUsImV4cCI6MjA5MDAwOTUwNX0.IC2tBvR_B7fM5XcU7fdydyQ8bz6p34fUZtQIREH7RTE';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+// ═══════════════════════════════════════════════════════════════════
+// CONFIGURATION DE L'API OVH
+// ═══════════════════════════════════════════════════════════════════
+const API_URL = 'https://api.myopee.com';
 
 // ═══════════════════════════════════════════════════════════════════
 // CONSTANTS & UTILITIES
@@ -698,40 +697,11 @@ const getLocalDateString = (date = new Date()) => {
 };
 
 // --- GESTION DES DATES MOIS/ANNÉE SÉCURISÉE ---
-// Accepte : "05.12", "05-12", "05/12", "05.2012", "05-2012", "05/2012", "2012-05" (format month input)
-const parseBirthInput = (raw) => {
-  if (!raw) return null;
-  const s = raw.trim();
-  // Format ISO "YYYY-MM" ou "YYYY-MM-DD" (ancien format)
-  if (/^\d{4}[-/]\d{1,2}/.test(s)) {
-    const dateStr = s.length === 7 ? s + "-01" : (s.length === 10 ? s : s + "-01");
-    return new Date(dateStr + "T00:00:00");
-  }
-  // Formats MM.YY, MM-YY, MM/YY, MM.YYYY, MM-YYYY, MM/YYYY
-  const m = s.match(/^(\d{1,2})[.\-/](\d{2,4})$/);
-  if (m) {
-    let month = parseInt(m[1], 10);
-    let year = parseInt(m[2], 10);
-    if (year < 100) year += 2000;
-    if (month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
-      return new Date(year, month - 1, 1);
-    }
-  }
-  return null;
-};
-
-// Normalise l'entrée utilisateur vers le format stocké "YYYY-MM"
-const normalizeBirthInput = (raw) => {
-  const d = parseBirthInput(raw);
-  if (!d || isNaN(d.getTime())) return raw;
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return yyyy + "-" + mm;
-};
-
 const parseBirthMonth = (ym) => {
-  const d = parseBirthInput(ym);
-  return d && !isNaN(d.getTime()) ? d : new Date();
+  if (!ym) return new Date();
+  // Sécurité : si la donnée locale est une ancienne date complète (YYYY-MM-DD), on la prend, sinon on rajoute -01 (YYYY-MM-01)
+  const dateStr = ym.length === 7 ? `${ym}-01` : ym;
+  return new Date(dateStr + "T00:00:00");
 };
 
 const calculateAge = (birthMonth) => {
@@ -749,7 +719,6 @@ const calculateAgeAtDate = (birthMonth, measureDate) => {
   const diffMs = d - birth;
   return diffMs / (365.25 * 24 * 60 * 60 * 1000);
 };
-// ----------------------------------------------
 
 const sortMeasurements = (measurements) => {
   if (!measurements) return [];
@@ -811,7 +780,6 @@ const calculateRiskScore = (patient) => {
   return Math.min(score, 15);
 };
 
-/** Estime la LA à 18 ans par extrapolation linéaire */
 const estimateALAt18 = (currentAL, age, growthRate) => {
   if (!currentAL || !growthRate || growthRate <= 0) return currentAL || 0;
   const yearsLeft = Math.max(0, 18 - age);
@@ -829,13 +797,10 @@ const getRecommendedTreatments = (patient, sortedMeasurements) => {
   const risk = getRiskLevel(growthRate);
   const recs = [];
 
-  // Projection : LA estimée à 18 ans
   const projectedAL = estimateALAt18(lastAL, age, growthRate);
-  // "Proche de 26" = LA actuelle >= 25 OU projection >= 26
   const alCloseToThreshold = (lastAL && lastAL >= 25) || projectedAL >= 26;
   const alAbove26 = lastAL && lastAL > 26;
 
-  // ── 1. Traitements optiques de première ligne ──
   if (age >= 6) {
     let priority = "standard";
     if ((lastAL && lastAL > 24) || riskScore >= 6) priority = "haute";
@@ -856,7 +821,6 @@ const getRecommendedTreatments = (patient, sortedMeasurements) => {
     recs.push({ ...TREATMENTS.mysight, priority: "standard", reason: "Alternative en lentilles souples freinatrices diurnes." });
   }
 
-  // ── 2. Lumière rouge ──
   if (age >= 6 && age <= 16) {
     let priority = "à considérer";
     let reason = "Technologie prometteuse. À discuter en complément si traitements insuffisants.";
@@ -867,10 +831,6 @@ const getRecommendedTreatments = (patient, sortedMeasurements) => {
     recs.push({ ...TREATMENTS.redLight, priority, reason });
   }
 
-  // ── 3. Bithérapie : traitement optique + Atropine 0,01% ──
-  // Indiquée si :
-  //   - LA > 26 → d'emblée
-  //   - Après 1 an de traitement optique seul, croissance > 0,1 mm/an ET LA proche de 26 (ou projection)
   if (age >= 4) {
     if (alAbove26) {
       recs.push({
@@ -896,8 +856,6 @@ const getRecommendedTreatments = (patient, sortedMeasurements) => {
     }
   }
 
-  // ── 4. Escalade : traitement optique + Atropine 0,05% ──
-  // Indiquée si croissance > 0,1 mm/an après 1 an sous bithérapie 0,01%
   if (age >= 4) {
     if (alAbove26 && growthRate && growthRate > 0.1) {
       recs.push({
@@ -1028,7 +986,6 @@ const Input = ({
   type = "text",
   value,
   onChange,
-  onBlur,
   placeholder,
   min,
   max,
@@ -1056,7 +1013,6 @@ const Input = ({
         type={type}
         value={value}
         onChange={handleChange}
-        onBlur={onBlur}
         placeholder={placeholder}
         min={min}
         max={max}
@@ -1286,9 +1242,7 @@ function PatientForm({ patient, onSave, onCancel }) {
   );
 
   const handleSave = useCallback(() => {
-    if (form.initials && form.birthDate && parseBirthInput(form.birthDate)) {
-      onSave({ ...form, birthDate: normalizeBirthInput(form.birthDate) });
-    }
+    if (form.initials && form.birthDate) onSave(form);
   }, [form, onSave]);
 
   const riskScore = useMemo(
@@ -1296,7 +1250,7 @@ function PatientForm({ patient, onSave, onCancel }) {
     [form]
   );
 
-  const isValid = form.initials && form.birthDate && parseBirthInput(form.birthDate) !== null;
+  const isValid = form.initials && form.birthDate;
 
   const riskColor =
     riskScore >= 10
@@ -1331,7 +1285,7 @@ function PatientForm({ patient, onSave, onCancel }) {
               <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default", userSelect: "all" }}>{form.patientId}</div>
             </div>
           )}
-          <Input label="Mois et année de naissance *" type="text" value={form.birthDate} onChange={update("birthDate")} placeholder="Ex: 05/2012, 05-12, 05.2012" onBlur={() => { const n = normalizeBirthInput(form.birthDate); if (n !== form.birthDate) setForm(f => ({...f, birthDate: n})); }} required />
+          <Input label="Mois et année de naissance *" type="month" value={form.birthDate} onChange={update("birthDate")} required />
           
           <Select
             label="Genre *"
@@ -1406,11 +1360,19 @@ function PatientForm({ patient, onSave, onCancel }) {
             ]}
           />
           <Input
-            label="Équivalent sphérique actuel (dioptries)"
+            label="Réfraction actuelle (dioptries)"
             type="number"
             value={form.riskFactors.currentRefraction}
             onChange={updateRF("currentRefraction")}
             placeholder="ex: -2.50"
+            step="0.25"
+          />
+          <Input
+            label="Progression annuelle (D/an)"
+            type="number"
+            value={form.riskFactors.annualProgression}
+            onChange={updateRF("annualProgression")}
+            placeholder="ex: -0.75"
             step="0.25"
           />
         </div>
@@ -1532,8 +1494,8 @@ function MeasurementsTab({
             <Input label="Date *" type="date" value={nm.date} onChange={updateField("date")} />
             <Input label="LA OD (mm)" type="number" value={nm.alOD} onChange={updateField("alOD")} placeholder="ex: 24.50" step="0.01" min="20" max="35" />
             <Input label="LA OG (mm)" type="number" value={nm.alOG} onChange={updateField("alOG")} placeholder="ex: 24.30" step="0.01" min="20" max="35" />
-            <Input label="Éq. sphérique OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
-            <Input label="Éq. sphérique OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
+            <Input label="Réfraction OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
+            <Input label="Réfraction OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
             <Select
               label="Traitement en cours"
               value={nm.treatment}
@@ -1641,8 +1603,8 @@ function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onEdit
           <Input label="Date *" type="date" value={editForm.date} onChange={updateEditField("date")} />
           <Input label="LA OD (mm)" type="number" value={editForm.alOD} onChange={updateEditField("alOD")} step="0.01" min="20" max="35" />
           <Input label="LA OG (mm)" type="number" value={editForm.alOG} onChange={updateEditField("alOG")} step="0.01" min="20" max="35" />
-          <Input label="Éq. sphérique OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
-          <Input label="Éq. sphérique OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
+          <Input label="Réfraction OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
+          <Input label="Réfraction OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
           <Select
             label="Traitement en cours"
             value={editForm.treatment}
@@ -1835,11 +1797,12 @@ function TreatmentCard({ rec, index, isOpen, onToggle, priorityLabel }) {
 // ═══════════════════════════════════════════════════════════════════
 
 const TOOLTIP_LABELS = {
-  al: "LA",
+  al: "LA (max)",
   alOD: "LA OD",
   alOG: "LA OG",
   emmetropic: "Norme emmétrope",
   p75: "P75",
+  p90: "P90",
 };
 
 const tooltipFormatter = (value, name) => [
@@ -1938,7 +1901,7 @@ function ChartTab({ sortedMeasurements, patient }) {
           Évolution de la longueur axiale
         </h3>
         <p style={{ marginBottom: 20, fontSize: 13, color: "#64748b" }}>
-          Courbe de suivi avec normes emmétropes (vert) et seuil P75
+          Courbe de suivi avec normes emmétropes (vert) et seuils (P75, P90)
         </p>
         <div style={{ width: "100%", height: 400 }}>
           <ResponsiveContainer>
@@ -1951,8 +1914,9 @@ function ChartTab({ sortedMeasurements, patient }) {
 
               <Line type="monotone" dataKey="emmetropic" stroke={COLORS.success} strokeDasharray="5 5" strokeWidth={1.5} dot={false} name="Norme emmétrope" />
               <Line type="monotone" dataKey="p75" stroke={COLORS.warning} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P75" />
+              <Line type="monotone" dataKey="p90" stroke={COLORS.danger} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P90" />
 
-              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA" connectNulls />
+              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA (max)" connectNulls />
               {hasODOG && (
                 <>
                   <Line type="monotone" dataKey="alOD" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} name="LA OD" connectNulls />
@@ -2058,7 +2022,6 @@ function PatientDetail({
 
   return (
     <div>
-      {/* Action buttons row — ESCRS style */}
       <div className="flex gap-8 mb-16 justify-end flex-wrap">
         <Button onClick={onEdit} icon={<Edit3 size={16} />}>Modifier</Button>
         <Button onClick={handlePrint} icon={<Printer size={16} />}>Imprimer</Button>
@@ -2098,7 +2061,6 @@ function PatientDetail({
                 <span className="flex items-center gap-4">
                   <Calendar size={14} /> {age} ans ({patient.gender === "F" ? "F" : "M"})
                 </span>
-                {/* MODIFICATION ICI : Affichage du mois et de l'année uniquement */}
                 <span className="flex items-center gap-4">
                   <Baby size={14} /> Né(e) en {parseBirthMonth(patient.birthDate).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
                 </span>
@@ -2117,9 +2079,8 @@ function PatientDetail({
           </div>
         </div>
 
-        {/* Shareable link */}
         <div className="flex items-center gap-8 mt-16" style={{ padding: "10px 14px", background: "#f1f5f9", borderRadius: 8 }}>
-          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien :</span>
+          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien patient :</span>
           <code style={{ fontSize: 14, color: COLORS.primary, fontWeight: 600, flex: 1, wordBreak: "break-all" }}>{shareUrl}</code>
           <button
             onClick={handleCopyLink}
@@ -2283,7 +2244,7 @@ function PatientDetail({
 // AUTHENTICATION COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 
-function Auth() {
+function Auth({ apiUrl }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null);
@@ -2293,17 +2254,19 @@ function Auth() {
     setLoading(true);
     setMessage(null);
 
-    const { error } = await supabase.auth.signInWithOtp({ 
-      email,
-      options: {
-        emailRedirectTo: window.location.origin,
-      }
-    });
-
-    if (error) {
-      setMessage({ type: 'danger', text: error.message });
-    } else {
-      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien vous a été envoyé.' });
+    try {
+      const res = await fetch(`${apiUrl}/login.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Erreur inconnue');
+      
+      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien magique vous a été envoyé.' });
+    } catch (err) {
+      setMessage({ type: 'danger', text: err.message });
     }
     setLoading(false);
   };
@@ -2336,7 +2299,7 @@ function Auth() {
             disabled={loading || !email} 
             style={{ justifyContent: 'center', marginTop: 8 }}
           >
-            {loading ? 'Envoi en cours...' : 'Recevoir le lien de connexion'}
+            {loading ? 'Envoi en cours...' : 'Recevoir le lien magique'}
           </Button>
         </form>
       </Card>
@@ -2399,18 +2362,17 @@ function Disclaimer() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// APP
+// APP ROOT
 // ═══════════════════════════════════════════════════════════════════
 
 function App() {
-  const [session, setSession] = useState(null);
+  const [jwt, setJwt] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   
-  // Gestion du routage
   const getPatientIdFromURL = useCallback(() => {
     const path = window.location.pathname.replace(/^\/+/, "");
     return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
@@ -2419,48 +2381,90 @@ function App() {
   const [currentView, setCurrentView] = useState("list");
   const [selectedId, setSelectedId] = useState(null);
 
-  // 1. GESTION DE LA SESSION SUPABASE
+  // 1. GESTION DE LA CONNEXION (MAGIC LINK & JWT)
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const email = urlParams.get('email');
+
+    if (token && email) {
+      // Retour du clic sur l'email : On valide avec OVH
+      setIsInitializing(true);
+      fetch(`${API_URL}/verify.php?token=${token}&email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.token) {
+            localStorage.setItem('myopee_jwt', data.token); // Sauvegarde le badge
+            setJwt(data.token);
+            // Nettoie l'URL pour la rendre propre
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            console.error("Token invalide", data.error);
+            alert("Ce lien de connexion est invalide ou expiré.");
+          }
+        })
+        .finally(() => setIsInitializing(false));
+    } else {
+      // Déjà connecté précédemment ?
+      const storedToken = localStorage.getItem('myopee_jwt');
+      if (storedToken) setJwt(storedToken);
       setIsInitializing(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
+    }
   }, []);
 
-  // 2. CHARGEMENT DES PATIENTS (Seulement si connecté)
+  // Fonction utilitaire pour parler à l'API OVH avec le badge JWT
+  const apiFetch = useCallback(async (endpoint, options = {}) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`, // Présentation du badge au vigile
+      ...(options.headers || {})
+    };
+    
+    const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
+    
+    if (res.status === 401) {
+      // Si le badge est périmé, on déconnecte
+      setJwt(null);
+      localStorage.removeItem('myopee_jwt');
+      throw new Error("Session expirée");
+    }
+    
+    return res.json();
+  }, [jwt]);
+
+  // 2. CHARGEMENT DES PATIENTS DEPUIS OVH
   useEffect(() => {
-    if (!session) return;
+    if (!jwt) return;
 
     const fetchPatients = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('patients').select('*');
-      if (!error) {
-        setPatients(data || []);
-        
-        // Routage initial si un ID est dans l'URL
-        const initialPatientId = getPatientIdFromURL();
-        if (initialPatientId && data) {
-          const found = data.find((p) => p.patientId === initialPatientId);
-          if (found) {
-            setSelectedId(found.id);
-            setCurrentView("detail");
+      try {
+        const data = await apiFetch('/patients.php');
+        if (Array.isArray(data)) {
+          setPatients(data);
+          
+          // Routage initial si un ID est dans l'URL
+          const initialPatientId = getPatientIdFromURL();
+          if (initialPatientId) {
+            const found = data.find((p) => p.patientId === initialPatientId);
+            if (found) {
+              setSelectedId(found.id);
+              setCurrentView("detail");
+            }
           }
         }
+      } catch (err) {
+        console.error("Erreur de chargement :", err);
       }
       setLoading(false);
     };
 
     fetchPatients();
-  }, [session, getPatientIdFromURL]);
+  }, [jwt, apiFetch, getPatientIdFromURL]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    setJwt(null);
+    localStorage.removeItem('myopee_jwt');
   };
 
   const pushPatientURL = useCallback((patientId) => {
@@ -2503,28 +2507,42 @@ function App() {
     );
   }, [patients, searchTerm]);
 
-  // ─── CRUD SUPABASE ───
+  // ─── CRUD OVH ───
 
   const addPatient = useCallback(async (data) => {
     const patientId = data.patientId || generatePatientId();
     const id = generateId();
-    const user_id = session?.user?.id;
-    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString(), user_id };
-
+    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() };
+    
+    // Mise à jour immédiate de l'écran
     setPatients((prev) => [...prev, newPatient]);
     setSelectedId(id);
     setCurrentView("detail");
     pushPatientURL(patientId);
 
-    const { error } = await supabase.from('patients').insert([newPatient]);
-    if (error) console.error("Erreur d'ajout :", error);
-  }, [pushPatientURL, session]);
+    // Sauvegarde en arrière-plan sur OVH
+    try {
+      await apiFetch('/patients.php', {
+        method: 'POST',
+        body: JSON.stringify(newPatient)
+      });
+    } catch (err) {
+      console.error("Erreur d'ajout :", err);
+    }
+  }, [pushPatientURL, apiFetch]);
 
   const updatePatient = useCallback(async (updated) => {
     setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    const { error } = await supabase.from('patients').update(updated).eq('id', updated.id);
-    if (error) console.error("Erreur de mise à jour :", error);
-  }, []);
+    
+    try {
+      await apiFetch(`/patients.php?id=${updated.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updated)
+      });
+    } catch (err) {
+      console.error("Erreur de mise à jour :", err);
+    }
+  }, [apiFetch]);
 
   const deletePatient = useCallback(async (id) => {
     setPatients((prev) => prev.filter((p) => p.id !== id));
@@ -2532,9 +2550,14 @@ function App() {
     setCurrentView("list");
     pushPatientURL(null);
 
-    const { error } = await supabase.from('patients').delete().eq('id', id);
-    if (error) console.error("Erreur de suppression :", error);
-  }, [pushPatientURL]);
+    try {
+      await apiFetch(`/patients.php?id=${id}`, {
+        method: 'DELETE'
+      });
+    } catch (err) {
+      console.error("Erreur de suppression :", err);
+    }
+  }, [pushPatientURL, apiFetch]);
 
   const addMeasurement = useCallback((patientId, measurement) => {
     setPatients((prev) => {
@@ -2622,11 +2645,11 @@ function App() {
   );
 
   if (isInitializing) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#64748b' }}>Chargement sécurisé...</div>;
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#64748b' }}>Chargement de l'environnement sécurisé...</div>;
   }
 
-  if (!session) {
-    return <Auth />;
+  if (!jwt) {
+    return <Auth apiUrl={API_URL} />;
   }
 
   return (
