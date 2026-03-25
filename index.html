@@ -12,7 +12,8 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+  <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <script crossorigin src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
 
   <style>
 /* ─── Variables & Reset ─────────────────────────────────────────── */
@@ -543,13 +544,28 @@ input, select, textarea, button { font-family: inherit; }
 .mt-20 { margin-top: 20px; }
 .w-full { width: 100%; }
 .text-center { text-align: center; }
+
+/* ─── Print styles ─────────────────────────────────────────────── */
+@media print {
+  body { background: #fff; }
+  .app-header, .app-footer, .disclaimer,
+  .tabs, .btn, button, .search-bar,
+  .empty-state { display: none !important; }
+  .app-main { padding: 0; max-width: 100%; }
+  .app-root { min-height: auto; }
+  .card { box-shadow: none; border: 1px solid #e2e8f0; break-inside: avoid; }
+  .card--highlight { border-left: 4px solid var(--c-primary); }
+  .stats-row { grid-template-columns: repeat(4, 1fr); }
+  .alert { break-inside: avoid; }
+  @page { margin: 1.5cm; }
+}
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
+const { useState, useEffect, useCallback, useMemo, useId } = React;
 const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } = window.Recharts;
 
 // ═══════════════════════════════════════════════════════════════════
@@ -863,6 +879,12 @@ const getNormForAge = (age) => {
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
+const generatePatientId = () => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const seg = (n) => Array.from({ length: n }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  return `${seg(3)}-${seg(4)}-${seg(3)}`;
+};
+
 // ═══════════════════════════════════════════════════════════════════
 // ICONS
 // ═══════════════════════════════════════════════════════════════════
@@ -898,13 +920,14 @@ const Globe = (p) => <I {...p} d={<><circle cx="12" cy="12" r="10" /><line x1="2
 const Smartphone = (p) => <I {...p} d={<><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></>} />;
 const Sun = (p) => <I {...p} d={<><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></>} />;
 const Baby = (p) => <I {...p} d={<><circle cx="12" cy="12" r="10" /><path d="M9 12h.01M15 12h.01" /><path d="M10 16a3.5 3.5 0 004 0" /></>} />;
+const Printer = (p) => <I {...p} d={<><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></>} />;
+const Share2 = (p) => <I {...p} d={<><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></>} />;
+const Check = (p) => <I {...p} d={<polyline points="20 6 9 17 4 12" />} />;
 
 // ═══════════════════════════════════════════════════════════════════
 // UI COMPONENTS
 // ═══════════════════════════════════════════════════════════════════
 
-let _uid = 0;
-const uid = () => `field-${++_uid}`;
 
 const Badge = ({ children, color = "#6366f1" }) => (
   <span
@@ -964,7 +987,7 @@ const Input = ({
   required,
   id: externalId,
 }) => {
-  const fieldId = externalId || uid();
+  const fieldId = externalId || useId();
 
   const handleChange = useCallback(
     (e) => onChange(e.target.value),
@@ -1001,7 +1024,7 @@ const Select = ({
   options,
   id: externalId,
 }) => {
-  const fieldId = externalId || uid();
+  const fieldId = externalId || useId();
 
   const handleChange = useCallback(
     (e) => onChange(e.target.value),
@@ -1032,7 +1055,7 @@ const Select = ({
 };
 
 const Toggle = ({ label, checked, onChange, id: externalId }) => {
-  const fieldId = externalId || uid();
+  const fieldId = externalId || useId();
 
   const handleClick = useCallback(() => onChange(!checked), [checked, onChange]);
 
@@ -1092,7 +1115,7 @@ function PatientList({ patients, searchTerm, onSearch, onSelect, onAdd }) {
             className="search-bar__input"
             value={searchTerm}
             onChange={handleSearch}
-            placeholder="Rechercher un patient..."
+            placeholder="Rechercher par initiales, ID ou praticien..."
             aria-label="Rechercher un patient"
           />
         </div>
@@ -1131,14 +1154,18 @@ function PatientRow({ patient, onSelect }) {
       <div className="flex justify-between items-center flex-wrap gap-12">
         <div className="flex items-center gap-16">
           <div className="avatar avatar--sm">
-            {patient.firstName?.[0]}{patient.lastName?.[0]}
+            {patient.initials || "?"}
           </div>
           <div>
             <div style={{ fontWeight: 600, fontSize: 16 }}>
-              {patient.firstName} {patient.lastName}
+              {patient.initials}{" "}
+              <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 400 }}>
+                {patient.patientId}
+              </span>
             </div>
             <div className="flex gap-12 mt-6" style={{ fontSize: 13, color: "#64748b" }}>
               <span>{age} ans</span>
+              {patient.surgeon && <span>{patient.surgeon}</span>}
               {lastMeasurement && <span>LA : {lastMeasurement.al} mm</span>}
               {sorted.length > 0 && (
                 <span>
@@ -1180,8 +1207,9 @@ const DEFAULT_RISK_FACTORS = {
 
 function PatientForm({ patient, onSave, onCancel }) {
   const [form, setForm] = useState({
-    firstName: patient?.firstName || "",
-    lastName: patient?.lastName || "",
+    surgeon: patient?.surgeon || "",
+    initials: patient?.initials || "",
+    patientId: patient?.patientId || "",
     birthDate: patient?.birthDate || "",
     gender: patient?.gender || "M",
     riskFactors: { ...DEFAULT_RISK_FACTORS, ...patient?.riskFactors },
@@ -1208,7 +1236,7 @@ function PatientForm({ patient, onSave, onCancel }) {
   );
 
   const handleSave = useCallback(() => {
-    if (form.firstName && form.lastName && form.birthDate) onSave(form);
+    if (form.initials && form.birthDate) onSave(form);
   }, [form, onSave]);
 
   const riskScore = useMemo(
@@ -1216,7 +1244,7 @@ function PatientForm({ patient, onSave, onCancel }) {
     [form]
   );
 
-  const isValid = form.firstName && form.lastName && form.birthDate;
+  const isValid = form.initials && form.birthDate;
 
   const riskColor =
     riskScore >= 10
@@ -1243,11 +1271,17 @@ function PatientForm({ patient, onSave, onCancel }) {
           <User size={18} color={COLORS.primary} /> Identité
         </h3>
         <div className="grid-2">
-          <Input label="Prénom *" value={form.firstName} onChange={update("firstName")} placeholder="Prénom" />
-          <Input label="Nom *" value={form.lastName} onChange={update("lastName")} placeholder="Nom" />
+          <Input label="Praticien" value={form.surgeon} onChange={update("surgeon")} placeholder="Nom du praticien" />
+          <Input label="Initiales patient *" value={form.initials} onChange={update("initials")} placeholder="Ex: ML" />
+          {form.patientId && (
+            <div className="form-group">
+              <label className="form-label">Id patient</label>
+              <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default", userSelect: "all" }}>{form.patientId}</div>
+            </div>
+          )}
           <Input label="Date de naissance *" type="date" value={form.birthDate} onChange={update("birthDate")} />
           <Select
-            label="Genre"
+            label="Genre *"
             value={form.gender}
             onChange={update("gender")}
             options={[
@@ -1255,6 +1289,12 @@ function PatientForm({ patient, onSave, onCancel }) {
               { value: "F", label: "Féminin" },
             ]}
           />
+          {form.birthDate && (
+            <div className="form-group">
+              <label className="form-label">Âge</label>
+              <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default" }}>{calculateAge(form.birthDate)} ans</div>
+            </div>
+          )}
         </div>
       </Card>
 
@@ -1583,7 +1623,7 @@ function TreatmentsTab({ recommendations }) {
     <div>
       <div className="alert alert--info mb-20 items-start">
         <Info size={20} color={COLORS.info} style={{ flexShrink: 0, marginTop: 2 }} />
-        <div className="alert--info .alert__body">
+        <div className="alert--info alert__body">
           Recommandations automatiques basées sur l'âge, la LA, le taux de
           progression et le profil de risque. Elles ne se substituent pas au
           jugement clinique.
@@ -1834,6 +1874,7 @@ function PatientDetail({
   const [showAddMeasure, setShowAddMeasure] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const age = useMemo(() => calculateAge(patient.birthDate), [patient.birthDate]);
 
@@ -1860,17 +1901,56 @@ function PatientDetail({
 
   const riskColor = riskScore >= 8 ? COLORS.danger : riskScore >= 5 ? COLORS.warning : COLORS.success;
 
+  const shareUrl = `https://myopee.com/${patient.patientId}`;
+
+  const handleCopyLink = useCallback(() => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [shareUrl]);
+
+  const handlePrint = useCallback(() => {
+    window.print();
+  }, []);
+
   return (
     <div>
+      {/* Action buttons row — ESCRS style */}
+      <div className="flex gap-8 mb-16 justify-end flex-wrap">
+        <Button onClick={onEdit} icon={<Edit3 size={16} />}>Modifier</Button>
+        <Button onClick={handlePrint} icon={<Printer size={16} />}>Imprimer</Button>
+        <Button onClick={handleCopyLink} icon={copied ? <Check size={16} /> : <Share2 size={16} />}>
+          {copied ? "Copié !" : "Partager"}
+        </Button>
+        {!confirmDelete ? (
+          <Button
+            variant="danger" size="sm"
+            onClick={() => setConfirmDelete(true)}
+            icon={<Trash2 size={14} />}
+          >
+            Supprimer
+          </Button>
+        ) : (
+          <div className="flex gap-4">
+            <Button variant="danger" size="sm" onClick={onDelete}>Confirmer</Button>
+            <Button variant="secondary" size="sm" onClick={() => setConfirmDelete(false)}>Annuler</Button>
+          </div>
+        )}
+      </div>
+
       <Card className="card--highlight mb-20">
         <div className="flex justify-between items-start flex-wrap gap-12">
           <div className="flex gap-16 items-center">
             <div className="avatar avatar--lg">
-              {patient.firstName?.[0]}{patient.lastName?.[0]}
+              {patient.initials || "?"}
             </div>
             <div>
               <h2 style={{ fontSize: 24, fontWeight: 700 }}>
-                {patient.firstName} {patient.lastName}
+                {patient.initials}{" "}
+                <span style={{ fontSize: 15, color: "#94a3b8", fontWeight: 400, fontFamily: "monospace" }}>
+                  {patient.patientId}
+                </span>
               </h2>
               <div className="flex gap-16 flex-wrap mt-6" style={{ fontSize: 14, color: "#64748b" }}>
                 <span className="flex items-center gap-4">
@@ -1879,6 +1959,11 @@ function PatientDetail({
                 <span className="flex items-center gap-4">
                   <Baby size={14} /> Né(e) le {new Date(patient.birthDate + "T00:00:00").toLocaleDateString("fr-FR")}
                 </span>
+                {patient.surgeon && (
+                  <span className="flex items-center gap-4">
+                    <User size={14} /> {patient.surgeon}
+                  </span>
+                )}
                 {patient.riskFactors?.currentRefraction && (
                   <span className="flex items-center gap-4">
                     <Eye size={14} /> {patient.riskFactors.currentRefraction} D
@@ -1887,25 +1972,33 @@ function PatientDetail({
               </div>
             </div>
           </div>
-          <div className="flex gap-8">
-            <Button variant="secondary" size="sm" onClick={onEdit} icon={<Edit3 size={14} />}>
-              Modifier
-            </Button>
-            {!confirmDelete ? (
-              <Button
-                variant="danger" size="sm"
-                onClick={() => setConfirmDelete(true)}
-                icon={<Trash2 size={14} />}
-              >
-                Supprimer
-              </Button>
-            ) : (
-              <div className="flex gap-4">
-                <Button variant="danger" size="sm" onClick={onDelete}>Confirmer</Button>
-                <Button variant="secondary" size="sm" onClick={() => setConfirmDelete(false)}>Annuler</Button>
-              </div>
-            )}
-          </div>
+        </div>
+
+        {/* Shareable link */}
+        <div className="flex items-center gap-8 mt-16" style={{ padding: "10px 14px", background: "#f1f5f9", borderRadius: 8 }}>
+          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien patient :</span>
+          <code style={{ fontSize: 14, color: COLORS.primary, fontWeight: 600, flex: 1, wordBreak: "break-all" }}>{shareUrl}</code>
+          <button
+            onClick={handleCopyLink}
+            aria-label="Copier le lien"
+            style={{
+              background: copied ? COLORS.success : COLORS.primary,
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              padding: "6px 12px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              fontSize: 13,
+              fontWeight: 600,
+              transition: "background 0.2s",
+              flexShrink: 0,
+            }}
+          >
+            {copied ? <><Check size={14} /> Copié</> : <><Share2 size={14} /> Copier</>}
+          </button>
         </div>
       </Card>
 
@@ -2137,16 +2230,19 @@ function App() {
     if (!q) return patients;
     return patients.filter(
       (p) =>
-        (p.firstName + " " + p.lastName).toLowerCase().includes(q)
+        ((p.initials || "") + " " + (p.patientId || "") + " " + (p.surgeon || "")).toLowerCase().includes(q)
     );
   }, [patients, searchTerm]);
 
   const addPatient = useCallback((data) => {
+    const patientId = data.patientId || generatePatientId();
+    const id = generateId();
     setPatients((prev) => [
       ...prev,
-      { ...data, id: generateId(), measurements: [], createdAt: new Date().toISOString() },
+      { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() },
     ]);
-    setCurrentView("list");
+    setSelectedId(id);
+    setCurrentView("detail");
   }, []);
 
   const updatePatient = useCallback((updated) => {
