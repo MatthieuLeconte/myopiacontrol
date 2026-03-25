@@ -10,7 +10,6 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script crossorigin src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
   <script crossorigin src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
 
   <style>
@@ -31,10 +30,8 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 18px;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 8px 25px rgba(99, 102, 241, 0.12);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,136 +40,96 @@ body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--c-bg);
   color: var(--c-text);
+  line-height: 1.5;
 }
 
 input, select, textarea, button { font-family: inherit; }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::selection { background: #c7d2fe; }
-
 /* ─── Layout ───────────────────────────────────────────────────── */
 .app-root {
   min-height: 100vh;
-  background: linear-gradient(180deg, #eef2ff 0%, var(--c-bg) 30%);
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
-  background: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8);
-  padding: 20px 32px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  padding: 16px 24px;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .app-header__brand {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .app-header__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 24px;
+  background: rgba(255,255,255,0.2);
+  padding: 8px;
+  border-radius: 12px;
 }
 
-.app-header__title {
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.app-header__subtitle {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-}
-
-.app-header__actions { display: flex; gap: 8px; }
+.app-header__title { font-size: 20px; font-weight: 700; }
 
 .app-main {
-  max-width: 1100px;
+  flex: 1;
+  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
   padding: 24px 20px;
 }
 
 .app-footer {
   text-align: center;
-  padding: 24px 20px 16px;
-  font-size: 12px;
-  color: var(--c-text-light);
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.app-footer__sources {
-  margin-bottom: 16px;
-  font-size: 12px;
-  color: var(--c-text-light);
-  font-style: italic;
-}
-
-.app-footer__copyright {
-  margin-bottom: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--c-text);
-}
-
-.disclaimer {
-  max-width: 900px;
-  margin: 32px auto 0;
   padding: 24px;
-  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-lg);
-}
-
-.disclaimer__title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--c-text);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.disclaimer__text {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--c-text-light);
+  border-top: 1px solid var(--c-border);
+  background: #fff;
+  margin-top: auto;
+}
+
+/* ─── Welcome / Disclaimer Page ────────────────────────────────── */
+.welcome-container {
+  max-width: 650px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.disclaimer-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-border);
+  box-shadow: var(--shadow-md);
+}
+
+.disclaimer-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--c-text);
+  text-align: center;
+}
+
+.disclaimer-text {
+  font-size: 15px;
+  color: #475569;
   line-height: 1.7;
 }
 
-.disclaimer__text p {
-  margin-bottom: 10px;
-}
+.disclaimer-text p { margin-bottom: 16px; }
+.disclaimer-text p:last-child { margin-bottom: 0; }
 
-.disclaimer__text p:last-child {
-  margin-bottom: 0;
-}
-
-.disclaimer__toggle {
-  font-size: 13px;
-  color: var(--c-primary);
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-weight: 600;
-  padding: 0;
-  margin-top: 4px;
-}
-.disclaimer__toggle:hover { text-decoration: underline; }
+.disclaimer-action { margin-top: 32px; }
 
 /* ─── Card ─────────────────────────────────────────────────────── */
 .card {
@@ -181,382 +138,259 @@ input, select, textarea, button { font-family: inherit; }
   border: 1px solid var(--c-border);
   padding: 24px;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s, transform 0.2s;
+  margin-bottom: 20px;
 }
 
-.card--clickable { cursor: pointer; }
-.card--clickable:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--c-border);
 }
 
-.card--highlight {
-  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-}
-
-.card--form {
-  border: 2px solid rgba(99, 102, 241, 0.12);
-  background: #fafbff;
-}
+.card-title { font-size: 17px; font-weight: 600; color: var(--c-text); }
 
 /* ─── Buttons ──────────────────────────────────────────────────── */
 .btn {
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  transition: background 0.15s, opacity 0.15s, transform 0.1s;
+  transition: all 0.2s;
   border: none;
-  line-height: 1;
+  font-size: 14px;
+  padding: 10px 20px;
 }
 
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn:active:not(:disabled) { transform: scale(0.97); }
 
-/* Sizes */
-.btn--sm { padding: 6px 12px; font-size: 13px; }
-.btn--md { padding: 10px 20px; font-size: 14px; }
-.btn--lg { padding: 14px 28px; font-size: 16px; }
+.btn-primary { background: var(--c-primary); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--c-primary-dark); }
 
-/* Variants */
-.btn--primary { background: var(--c-primary); color: #fff; }
-.btn--primary:hover:not(:disabled) { background: var(--c-primary-dark); }
+.btn-secondary { background: #fff; color: var(--c-text); border: 1px solid var(--c-border); }
+.btn-secondary:hover:not(:disabled) { background: #f1f5f9; }
 
-.btn--secondary { background: transparent; color: var(--c-text); border: 1px solid var(--c-border); }
-.btn--secondary:hover:not(:disabled) { background: #f1f5f9; }
+.btn-danger { background: var(--c-danger); color: #fff; }
+.btn-danger:hover:not(:disabled) { background: #dc2626; }
 
-.btn--danger { background: var(--c-danger); color: #fff; }
-.btn--danger:hover:not(:disabled) { background: #dc2626; }
-
-.btn--ghost { background: transparent; color: var(--c-text-light); }
-.btn--ghost:hover:not(:disabled) { background: #f1f5f9; }
-
-.btn--success { background: var(--c-success); color: #fff; }
-.btn--success:hover:not(:disabled) { background: #059669; }
-
-.btn--header {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-.btn--header:hover:not(:disabled) { background: rgba(255, 255, 255, 0.15); }
+.btn-lg { padding: 14px 28px; font-size: 16px; width: 100%; }
+.btn-sm { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
 
 /* ─── Form Controls ────────────────────────────────────────────── */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
 
-.form-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--c-text-light);
-  cursor: pointer;
-}
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
 
-.form-input,
-.form-select {
+.form-label { font-size: 13px; font-weight: 600; color: var(--c-text-light); }
+
+.form-input, .form-select, .form-textarea {
   padding: 10px 14px;
   border-radius: 10px;
   border: 1.5px solid var(--c-border);
   font-size: 14px;
   color: var(--c-text);
   background: #fff;
-  outline: none;
-  transition: border-color 0.15s;
+  width: 100%;
+  transition: border-color 0.2s;
 }
 
-.form-input:focus,
-.form-select:focus {
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
   border-color: var(--c-primary);
 }
 
-.form-select { cursor: pointer; }
+.form-textarea { resize: vertical; font-family: inherit; }
 
-.form-textarea {
+.form-static {
   padding: 10px 14px;
+  background: #f1f5f9;
   border-radius: 10px;
-  border: 1.5px solid var(--c-border);
   font-size: 14px;
-  font-family: inherit;
-  color: var(--c-text);
-  resize: vertical;
-  outline: none;
-  width: 100%;
-  transition: border-color 0.15s;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
 }
-.form-textarea:focus { border-color: var(--c-primary); }
 
 /* Toggle switch */
 .toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; }
 .toggle__track {
-  width: 44px; height: 24px; border-radius: 12px;
+  width: 40px; height: 22px; border-radius: 11px;
   position: relative; transition: background 0.2s;
-  background: #cbd5e1; cursor: pointer; flex-shrink: 0;
+  background: #cbd5e1; flex-shrink: 0;
 }
 .toggle__track--on { background: var(--c-primary); }
 .toggle__thumb {
-  width: 20px; height: 20px; border-radius: 10px; background: #fff;
+  width: 18px; height: 18px; border-radius: 9px; background: #fff;
   position: absolute; top: 2px; left: 2px;
-  transition: left 0.2s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: left 0.2s;
 }
-.toggle__track--on .toggle__thumb { left: 22px; }
-
-/* ─── Badge ────────────────────────────────────────────────────── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* ─── Grid layouts ─────────────────────────────────────────────── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-
-@media (max-width: 640px) {
-  .grid-2 { grid-template-columns: 1fr; }
-}
-
-/* ─── Stat Card ────────────────────────────────────────────────── */
-.stat-card {
-  border-radius: 14px;
-  padding: 20px;
-  flex: 1;
-  min-width: 140px;
-}
-.stat-card__label {
-  font-size: 12px;
-  color: var(--c-text-light);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.stat-card__value { font-size: 28px; font-weight: 700; margin-top: 4px; }
-.stat-card__subtitle { font-size: 12px; color: var(--c-text-light); margin-top: 2px; }
-.stat-card__icon { border-radius: 10px; padding: 8px; }
-
-/* ─── Stats row ────────────────────────────────────────────────── */
-.stats-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-/* ─── Search bar ───────────────────────────────────────────────── */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #fff;
-  border-radius: var(--radius-md);
-  padding: 10px 16px;
-  border: 1.5px solid var(--c-border);
-  flex: 1;
-}
-
-.search-bar__input {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--c-text);
-  background: transparent;
-}
+.toggle__track--on .toggle__thumb { left: 20px; }
 
 /* ─── Tabs ─────────────────────────────────────────────────────── */
 .tabs {
-  display: flex;
-  gap: 4px;
-  background: #f1f5f9;
-  border-radius: 14px;
-  padding: 4px;
-  flex-wrap: wrap;
+  display: flex; gap: 4px; background: #f1f5f9;
+  border-radius: 12px; padding: 4px; margin-bottom: 20px;
+  overflow-x: auto;
 }
 
 .tab-btn {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: transparent;
-  color: var(--c-text-light);
-  transition: all 0.2s;
+  flex: 1; padding: 10px 16px; border-radius: 9px;
+  border: none; cursor: pointer; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: transparent; color: var(--c-text-light);
+  white-space: nowrap; transition: 0.2s;
 }
 
 .tab-btn--active {
-  background: #fff;
-  color: var(--c-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #fff; color: var(--c-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* ─── Alert banners ────────────────────────────────────────────── */
-.alert {
-  border-radius: 14px;
-  padding: 16px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
+/* ─── Patient Header ───────────────────────────────────────────── */
+.patient-header {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border: 1px solid #c7d2fe;
 }
 
-.alert--danger {
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  border: 1px solid #fecaca;
-}
-.alert--danger .alert__title { color: var(--c-danger); font-weight: 600; }
-.alert--danger .alert__body { font-size: 13px; color: #991b1b; }
-
-.alert--warning {
-  background: linear-gradient(135deg, #fffbeb, #fef3c7);
-  border: 1px solid #fde68a;
-}
-.alert--warning .alert__title { font-weight: 600; color: #92400e; }
-.alert--warning .alert__body { font-size: 13px; color: #78350f; }
-
-.alert--info {
-  background: #f0f9ff;
-  border: 1px solid #bae6fd;
-}
-.alert--info .alert__body { font-size: 13px; color: #0c4a6e; }
-
-/* ─── Avatar ───────────────────────────────────────────────────── */
 .avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 700;
+  width: 60px; height: 60px; border-radius: 16px;
   background: linear-gradient(135deg, var(--c-primary), var(--c-primary-light));
-  flex-shrink: 0;
+  color: #fff; font-size: 24px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
   text-transform: uppercase;
 }
-.avatar--sm { width: 48px; height: 48px; border-radius: 14px; font-size: 18px; }
-.avatar--lg { width: 64px; height: 64px; border-radius: var(--radius-xl); font-size: 24px; }
 
-/* ─── Risk factor chip ─────────────────────────────────────────── */
-.risk-chip {
-  padding: 12px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.risk-chip--danger { background: #fef2f2; border: 1px solid #fecaca; }
-.risk-chip--safe { background: #f0fdf4; border: 1px solid #bbf7d0; }
-.risk-chip__label { font-size: 12px; color: var(--c-text-light); }
-.risk-chip__value { font-size: 14px; font-weight: 600; }
-
-/* ─── Risk score bar ───────────────────────────────────────────── */
-.risk-bar { padding: 16px; background: #f8fafc; border-radius: var(--radius-md); margin-top: 20px; }
-.risk-bar__track { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-.risk-bar__fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-
-/* ─── Treatment card ───────────────────────────────────────────── */
-.treatment-card { padding: 0; cursor: pointer; }
-.treatment-card__inner { padding: 16px 20px; }
-.treatment-card__reason {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-.treatment-card__detail {
-  padding: 12px;
-  background: #f8fafc;
-  border-radius: 8px;
-  font-size: 13px;
-}
-.treatment-card__evidence {
-  padding: 12px;
-  background: #f0f9ff;
-  border-radius: 8px;
-  font-size: 13px;
-  grid-column: 1 / -1;
+.patient-id-badge {
+  font-family: monospace; font-size: 14px;
+  color: var(--c-primary-dark); background: rgba(99,102,241,0.1);
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
 }
 
-/* ─── Measurement row ──────────────────────────────────────────── */
-.measurement-row { padding: 16px; }
-.measurement-row__date { font-weight: 600; font-size: 15px; }
-.measurement-row__values { display: flex; gap: 20px; font-size: 14px; flex-wrap: wrap; }
-.measurement-row__growth { margin-top: 6px; font-size: 13px; }
-.measurement-row__notes { margin-top: 6px; font-size: 13px; color: var(--c-text-light); font-style: italic; }
+/* ─── Stats Grid ───────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 20px;
+}
 
-.delete-btn {
-  background: none;
-  border: none;
+.stat-card {
+  padding: 20px; border-radius: 14px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; color: var(--c-text-light); }
+.stat-value { font-size: 26px; font-weight: 700; }
+.stat-sub { font-size: 12px; color: var(--c-text-light); }
+
+/* ─── Risk Factors ─────────────────────────────────────────────── */
+.risk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+
+.risk-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: 10px; border: 1px solid var(--c-border);
+}
+
+.risk-item--high { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+.risk-item--low { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+
+.risk-item__icon { font-size: 18px; }
+.risk-item__label { font-size: 12px; color: #64748b; }
+.risk-item--high .risk-item__label { color: #b91c1c; }
+.risk-item--low .risk-item__label { color: #15803d; }
+.risk-item__value { font-size: 14px; font-weight: 600; }
+
+.risk-score-bar { background: #f1f5f9; padding: 16px; border-radius: 12px; margin-top: 16px; }
+.risk-score-progress { height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; margin: 8px 0; }
+.risk-score-fill { height: 100%; border-radius: 5px; transition: width 0.3s; }
+
+/* ─── Measurements ─────────────────────────────────────────────── */
+.measure-item {
+  border: 1px solid var(--c-border); padding: 16px; border-radius: 12px;
+  margin-bottom: 10px; transition: background 0.2s;
+}
+.measure-item:hover { background: #fafbff; }
+
+.measure-date { font-weight: 600; font-size: 15px; margin-right: 10px; }
+.measure-age { font-size: 12px; color: var(--c-text-light); background: #f1f5f9; padding: 2px 8px; border-radius: 6px; }
+
+.measure-values {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 10px; font-size: 14px;
+}
+
+.growth-indicator { font-weight: 600; font-size: 13px; margin-top: 5px; }
+
+/* ─── Treatment Card ───────────────────────────────────────────── */
+.treatment-card {
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  color: var(--c-text-light);
-  transition: color 0.15s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.delete-btn:hover { color: var(--c-danger); }
 
-/* ─── Chart legend ─────────────────────────────────────────────── */
-.chart-legend { display: flex; gap: 16px; flex-wrap: wrap; }
-.chart-legend__item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-.chart-legend__dot { width: 12px; height: 12px; border-radius: 3px; }
+.treatment-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
 
-/* ─── Empty state ──────────────────────────────────────────────── */
-.empty-state { text-align: center; padding: 60px 24px; }
-.empty-state__icon { font-size: 48px; margin-bottom: 16px; }
-.empty-state__title { margin-bottom: 8px; }
-.empty-state__text { color: var(--c-text-light); margin-bottom: 24px; }
+.treatment-header {
+  padding: 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
 
-/* ─── Flex helpers ─────────────────────────────────────────────── */
+.treatment-info { display: flex; align-items: center; gap: 12px; }
+.treatment-icon { font-size: 24px; }
+.treatment-name { font-weight: 600; font-size: 15px; color: var(--c-text); }
+.treatment-efficacy { font-size: 13px; color: var(--c-text-light); }
+
+.treatment-reason {
+  font-size: 13px; font-style: italic; color: var(--c-text-light);
+  padding: 10px 16px; background: #f8fafc; border-top: 1px solid var(--c-border);
+}
+
+/* ─── Badges ────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+
+/* ─── Alerts ───────────────────────────────────────────────────── */
+.alert {
+  padding: 16px; border-radius: 12px; display: flex; gap: 12px;
+  margin-bottom: 20px; align-items: start;
+}
+.alert-danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+.alert-warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+.alert-icon { font-size: 20px; flex-shrink: 0; }
+.alert-title { font-weight: 600; margin-bottom: 2px; }
+.alert-body { font-size: 13px; }
+
+/* ─── Helpers ──────────────────────────────────────────────────── */
 .flex { display: flex; }
-.flex-wrap { flex-wrap: wrap; }
-.flex-col { flex-direction: column; }
 .items-center { align-items: center; }
-.items-start { align-items: flex-start; }
 .justify-between { justify-content: space-between; }
-.justify-end { justify-content: flex-end; }
-.gap-4 { gap: 4px; }
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
 .gap-16 { gap: 16px; }
-.gap-20 { gap: 20px; }
-.gap-24 { gap: 24px; }
-.mb-8 { margin-bottom: 8px; }
-.mb-12 { margin-bottom: 12px; }
-.mb-16 { margin-bottom: 16px; }
-.mb-20 { margin-bottom: 20px; }
-.mb-24 { margin-bottom: 24px; }
-.mt-6 { margin-top: 6px; }
-.mt-12 { margin-top: 12px; }
-.mt-16 { margin-top: 16px; }
-.mt-20 { margin-top: 20px; }
 .w-full { width: 100%; }
-.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+.mb-10 { margin-bottom: 10px; }
+.text-danger { color: var(--c-danger); }
+.empty-state { text-align: center; padding: 40px; color: var(--c-text-light); font-size: 14px; }
 
 /* ─── Print styles ─────────────────────────────────────────────── */
 @media print {
-  body { background: #fff; }
-  .app-header, .app-footer, .disclaimer,
-  .tabs, .btn, button, .search-bar,
-  .empty-state { display: none !important; }
-  .app-main { padding: 0; max-width: 100%; }
-  .app-root { min-height: auto; }
-  .card { box-shadow: none; border: 1px solid #e2e8f0; break-inside: avoid; }
-  .card--highlight { border-left: 4px solid var(--c-primary); }
-  .stats-row { grid-template-columns: repeat(4, 1fr); }
-  .alert { break-inside: avoid; }
-  @page { margin: 1.5cm; }
+  body { background: #fff; color: #000; }
+  .app-header, .tabs, .btn, button, .app-footer, .no-print { display: none !important; }
+  .app-main { padding: 0; margin: 0; max-width: 100%; }
+  .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 15px; padding: 15px; }
+  .stat-card { border: 1px solid #eee; break-inside: avoid; }
+  @page { margin: 2cm; }
 }
   </style>
 </head>
@@ -568,28 +402,14 @@ const { useState, useEffect, useCallback, useMemo, useId } = React;
 const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } = window.Recharts;
 
 // ═══════════════════════════════════════════════════════════════════
-// CONFIGURATION DE L'API OVH
+// CONFIGURATION & CONSTANTES
 // ═══════════════════════════════════════════════════════════════════
+
 const API_URL = 'https://api.myopee.com';
 
-// ═══════════════════════════════════════════════════════════════════
-// CONSTANTS & UTILITIES
-// ═══════════════════════════════════════════════════════════════════
-
 const COLORS = {
-  primary: "#6366f1",
-  primaryLight: "#818cf8",
-  primaryDark: "#4f46e5",
-  accent: "#f59e0b",
-  success: "#10b981",
-  danger: "#ef4444",
-  warning: "#f59e0b",
-  info: "#3b82f6",
-  bg: "#f8fafc",
-  card: "#ffffff",
-  text: "#1e293b",
-  textLight: "#64748b",
-  border: "#e2e8f0",
+  primary: "#6366f1", success: "#10b981", danger: "#ef4444", warning: "#f59e0b",
+  info: "#3b82f6", text: "#1e293b", textLight: "#64748b", border: "#e2e8f0"
 };
 
 const AL_NORMS = {
@@ -608,2155 +428,718 @@ const AL_NORMS = {
   18: { emmetropic: 23.55, p75: 23.82, p90: 24.12 },
 };
 
-const GROWTH_THRESHOLDS = {
-  normal: 0.1,
-  borderline: 0.2,
-  rapid: 0.3,
-  veryRapid: 0.4,
-};
+const GROWTH_THRESHOLDS = { normal: 0.1, borderline: 0.2, rapid: 0.3 };
 
 const TREATMENTS = {
-  dims: {
-    name: "Verres DIMS (MiYOSMART)",
-    icon: "👓",
-    color: "#14b8a6",
-    efficacy: "~50-60% de ralentissement",
-    ageRange: [6, 18],
-    contraindications: ["Strabisme non contrôlé"],
-    sideEffects: "Adaptation initiale possible (halos périphériques)",
-    evidence: "Étude Lam 2020 : réduction 52% progression myopique, 62% croissance LA sur 2 ans",
-  },
-  hal: {
-    name: "Verres HAL (Stellest)",
-    icon: "👓",
-    color: "#06b6d4",
-    efficacy: "~55-67% de ralentissement",
-    ageRange: [6, 18],
-    contraindications: ["Strabisme non contrôlé"],
-    sideEffects: "Adaptation initiale, possible perception des micro-lentilles",
-    evidence: "Étude Bao 2022 : réduction 67% élongation axiale sur 2 ans avec port >12h/j",
-  },
-  orthoK: {
-    name: "Orthokératologie",
-    icon: "👁️",
-    color: "#0ea5e9",
-    efficacy: "~30-50% de ralentissement",
-    ageRange: [7, 18],
-    contraindications: ["Kératocône", "Sécheresse oculaire sévère", "Mauvaise hygiène"],
-    sideEffects: "Risque infectieux (kératite), inconfort initial",
-    evidence: "IMI 2025 : efficacité bien démontrée, ralentissement 30-50%",
-  },
-  mysight: {
-    name: "Lentilles freinatrices diurnes",
-    icon: "🔵",
-    color: "#3b82f6",
-    efficacy: "~50% de ralentissement",
-    ageRange: [8, 18],
-    contraindications: ["Sécheresse oculaire", "Mauvaise hygiène", "Astigmatisme > 1D"],
-    sideEffects: "Risque infectieux (faible en journalières), inconfort possible",
-    evidence: "FDA approved. Étude 6 ans : maintien efficacité à long terme",
-  },
-  atropine001: {
-    name: "Atropine 0,01%",
-    icon: "💧",
-    color: "#8b5cf6",
-    efficacy: "Effet modeste en monothérapie (~0,08mm/an)",
-    ageRange: [4, 18],
-    contraindications: ["Allergie à l'atropine"],
-    sideEffects: "Photophobie minime, légère mydriase",
-    evidence: "IMI 2025 : efficacité modeste en monothérapie, intérêt en bithérapie",
-  },
-  atropine005: {
-    name: "Atropine 0,05%",
-    icon: "💧",
-    color: "#7c3aed",
-    efficacy: "Modérée (~0,12-0,15mm/an de réduction)",
-    ageRange: [4, 18],
-    contraindications: ["Allergie à l'atropine"],
-    sideEffects: "Photophobie légère à modérée, mydriase, possible gêne accommodation",
-    evidence: "LAMP Study : dose optimale selon rapport bénéfice/risque",
-  },
-  redLight: {
-    name: "Luminothérapie rouge (RLRL)",
-    icon: "🔴",
-    color: "#ef4444",
-    efficacy: "~70-80% de ralentissement",
-    ageRange: [6, 16],
-    contraindications: ["Pathologie rétinienne", "Photosensibilité"],
-    sideEffects: "Sécurité long terme en cours d'évaluation. Images rémanentes transitoires.",
-    evidence: "Études chinoises récentes très prometteuses, recul insuffisant",
-  },
+  dims: { name: "Verres DIMS", icon: "👓", color: "#14b8a6", efficacy: "~50-60% ralentissement" },
+  hal: { name: "Verres HAL", icon: "👓", color: "#06b6d4", efficacy: "~55-67% ralentissement" },
+  orthoK: { name: "Orthokératologie", icon: "👁️", color: "#0ea5e9", efficacy: "~30-50% ralentissement" },
+  mysight: { name: "Lentilles MySight", icon: "🔵", color: "#3b82f6", efficacy: "~50% ralentissement" },
+  atropine001: { name: "Atropine 0,01%", icon: "💧", color: "#8b5cf6", efficacy: "Effet modeste" },
+  atropine005: { name: "Atropine 0,05%", icon: "💧", color: "#7c3aed", efficacy: "Efficacité modérée" }
 };
 
-// Medical utilities
-const getLocalDateString = (date = new Date()) => {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-};
-
-// --- GESTION DES DATES MOIS/ANNÉE SÉCURISÉE ---
-const parseBirthMonth = (ym) => {
-  if (!ym) return new Date();
-  // Sécurité : si la donnée locale est une ancienne date complète (YYYY-MM-DD), on la prend, sinon on rajoute -01 (YYYY-MM-01)
-  const dateStr = ym.length === 7 ? `${ym}-01` : ym;
-  return new Date(dateStr + "T00:00:00");
-};
-
-const calculateAge = (birthMonth) => {
-  const today = new Date();
-  const birth = parseBirthMonth(birthMonth);
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
-};
-
-const calculateAgeAtDate = (birthMonth, measureDate) => {
-  const birth = parseBirthMonth(birthMonth);
-  const d = new Date(measureDate + "T00:00:00");
-  const diffMs = d - birth;
-  return diffMs / (365.25 * 24 * 60 * 60 * 1000);
-};
-
-const sortMeasurements = (measurements) => {
-  if (!measurements) return [];
-  return [...measurements].sort(
-    (a, b) => new Date(a.date + "T00:00:00") - new Date(b.date + "T00:00:00")
-  );
-};
-
-const calculateGrowthRate = (sortedMeasurements) => {
-  if (!sortedMeasurements || sortedMeasurements.length < 2) return null;
-  const last = sortedMeasurements[sortedMeasurements.length - 1];
-  const prev = sortedMeasurements[sortedMeasurements.length - 2];
-  const daysDiff =
-    (new Date(last.date + "T00:00:00") - new Date(prev.date + "T00:00:00")) /
-    (1000 * 60 * 60 * 24);
-  if (daysDiff < 30) return null;
-  return (last.al - prev.al) / (daysDiff / 365.25);
-};
-
-const getRiskLevel = (growthRate) => {
-  if (growthRate === null)
-    return { level: "unknown", label: "Insuffisant", color: "#94a3b8" };
-  if (growthRate <= GROWTH_THRESHOLDS.normal)
-    return { level: "low", label: "Normal", color: COLORS.success };
-  if (growthRate <= GROWTH_THRESHOLDS.borderline)
-    return { level: "moderate", label: "Modéré", color: COLORS.warning };
-  if (growthRate <= GROWTH_THRESHOLDS.rapid)
-    return { level: "high", label: "Rapide", color: "#f97316" };
-  return { level: "veryHigh", label: "Très rapide", color: COLORS.danger };
-};
-
-const calculateRiskScore = (patient) => {
-  let score = 0;
-  const rf = patient.riskFactors || {};
-
-  if (rf.familyHistory === "2") score += 3;
-  else if (rf.familyHistory === "1") score += 2;
-
-  if (rf.asianOrigin) score += 2;
-
-  if (rf.screenTime === "high") score += 2;
-  else if (rf.screenTime === "moderate") score += 1;
-
-  if (rf.outdoorTime === "low") score += 2;
-  else if (rf.outdoorTime === "moderate") score += 1;
-
-  if (rf.nearWork === "high") score += 2;
-  else if (rf.nearWork === "moderate") score += 1;
-
-  if (rf.earlyOnset) score += 2;
-  if (rf.sleepDuration === "short") score += 1;
-
-  if (patient.birthDate) {
-    const age = calculateAge(patient.birthDate);
-    if (age < 8) score += 2;
-    else if (age < 10) score += 1;
-  }
-
-  return Math.min(score, 15);
-};
-
-const estimateALAt18 = (currentAL, age, growthRate) => {
-  if (!currentAL || !growthRate || growthRate <= 0) return currentAL || 0;
-  const yearsLeft = Math.max(0, 18 - age);
-  return currentAL + growthRate * yearsLeft;
-};
-
-const getRecommendedTreatments = (patient, sortedMeasurements) => {
-  const age = calculateAge(patient.birthDate);
-  const growthRate = calculateGrowthRate(sortedMeasurements);
-  const riskScore = calculateRiskScore(patient);
-  const lastAL =
-    sortedMeasurements.length > 0
-      ? sortedMeasurements[sortedMeasurements.length - 1].al
-      : null;
-  const risk = getRiskLevel(growthRate);
-  const recs = [];
-
-  const projectedAL = estimateALAt18(lastAL, age, growthRate);
-  const alCloseToThreshold = (lastAL && lastAL >= 25) || projectedAL >= 26;
-  const alAbove26 = lastAL && lastAL > 26;
-
-  if (age >= 6) {
-    let priority = "standard";
-    if ((lastAL && lastAL > 24) || riskScore >= 6) priority = "haute";
-    if (risk.level === "high" || risk.level === "veryHigh") priority = "haute";
-
-    recs.push({ ...TREATMENTS.dims, priority, reason: "Première ligne : verres freinateurs non invasifs." });
-    recs.push({ ...TREATMENTS.hal, priority, reason: "Première ligne : alternative aux DIMS, efficacité surtout si port > 12h/j." });
-  }
-
-  if (age >= 7 && age <= 18) {
-    let priority = "standard";
-    if (growthRate && growthRate > 0.25) priority = "haute";
-    if (lastAL && lastAL > 25) priority = "haute";
-    recs.push({ ...TREATMENTS.orthoK, priority, reason: "Lentilles rigides nocturnes, bonne efficacité." });
-  }
-
-  if (age >= 8) {
-    recs.push({ ...TREATMENTS.mysight, priority: "standard", reason: "Alternative en lentilles souples freinatrices diurnes." });
-  }
-
-  if (age >= 6 && age <= 16) {
-    let priority = "à considérer";
-    let reason = "Technologie prometteuse. À discuter en complément si traitements insuffisants.";
-    if (growthRate && growthRate > 0.3) {
-      priority = "haute";
-      reason = "Progression rapide : envisager la RLRL en complément.";
-    }
-    recs.push({ ...TREATMENTS.redLight, priority, reason });
-  }
-
-  if (age >= 4) {
-    if (alAbove26) {
-      recs.push({
-        ...TREATMENTS.atropine001,
-        priority: "haute",
-        name: "Bithérapie : optique + Atropine 0,01%",
-        reason: "LA > 26 mm : bithérapie d'emblée recommandée (DIMS/HAL/OrthoK + atropine 0,01%).",
-      });
-    } else if (growthRate && growthRate > 0.1 && alCloseToThreshold) {
-      recs.push({
-        ...TREATMENTS.atropine001,
-        priority: "haute",
-        name: "Bithérapie : optique + Atropine 0,01%",
-        reason: `Croissance ${growthRate.toFixed(2)} mm/an sous traitement, LA proche du seuil de 26 mm : associer atropine 0,01% au traitement optique.`,
-      });
-    } else {
-      recs.push({
-        ...TREATMENTS.atropine001,
-        priority: "standard",
-        name: "Bithérapie : optique + Atropine 0,01%",
-        reason: "À envisager si croissance > 0,1 mm/an après 1 an de traitement optique seul et LA proche de 26 mm.",
-      });
-    }
-  }
-
-  if (age >= 4) {
-    if (alAbove26 && growthRate && growthRate > 0.1) {
-      recs.push({
-        ...TREATMENTS.atropine005,
-        priority: "haute",
-        name: "Escalade : optique + Atropine 0,05%",
-        reason: `LA > 26 mm et croissance persistante (${growthRate.toFixed(2)} mm/an) : passer à atropine 0,05%.`,
-      });
-    } else {
-      recs.push({
-        ...TREATMENTS.atropine005,
-        priority: "à considérer",
-        name: "Escalade : optique + Atropine 0,05%",
-        reason: "Si croissance > 0,1 mm/an persiste après 1 an de bithérapie avec atropine 0,01%, escalader à 0,05%.",
-      });
-    }
-  }
-
-  const order = { haute: 0, "à considérer": 1, standard: 2 };
-  return recs.sort((a, b) => (order[a.priority] ?? 3) - (order[b.priority] ?? 3));
-};
-
-const getNormForAge = (age) => {
-  const clamped = Math.min(18, Math.max(6, Math.round(age)));
-  return AL_NORMS[clamped] || AL_NORMS[6];
-};
+// ═══════════════════════════════════════════════════════════════════
+// FONCTIONS UTILITAIRES (MÉDICALES & DATES)
+// ═══════════════════════════════════════════════════════════════════
 
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
 const generatePatientId = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const seg = (n) => Array.from({ length: n }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  const seg = (n) => Array.from({length:n}, () => chars[Math.floor(Math.random()*chars.length)]).join("");
   return `${seg(3)}-${seg(4)}-${seg(3)}`;
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// ICONS
-// ═══════════════════════════════════════════════════════════════════
+// Accepte : "05.12", "05-12", "05/12", "05.2012", "05-2012", "05/2012", "2012-05"
+const parseBirthInput = (raw) => {
+  if (!raw) return null;
+  const s = raw.trim();
+  if (/^\d{4}[-/]\d{1,2}/.test(s)) return new Date((s.length >= 10 ? s : s + "-01") + "T00:00:00");
+  const m = s.match(/^(\d{1,2})[.\-/](\d{2,4})$/);
+  if (m) {
+    let month = parseInt(m[1], 10), year = parseInt(m[2], 10);
+    if (year < 100) year += 2000;
+    if (month >= 1 && month <= 12 && year >= 1900 && year <= 2100) return new Date(year, month - 1, 1);
+  }
+  return null;
+};
+const normalizeBirthInput = (raw) => {
+  const d = parseBirthInput(raw);
+  if (!d || isNaN(d.getTime())) return raw;
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+};
+const parseBirthMonth = (ym) => { const d = parseBirthInput(ym); return d && !isNaN(d.getTime()) ? d : new Date(); };
 
-const I = ({ d, size = 16, color = "currentColor", ...rest }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-    stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
-    {typeof d === "string" ? <path d={d} /> : d}
-  </svg>
-);
-
-const Plus = (p) => <I {...p} d={<><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></>} />;
-const Trash2 = (p) => <I {...p} d={<><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></>} />;
-const Edit3 = (p) => <I {...p} d={<><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></>} />;
-const Save = (p) => <I {...p} d={<><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></>} />;
-const X = (p) => <I {...p} d={<><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>} />;
-const Search = (p) => <I {...p} d={<><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></>} />;
-const ChevronRight = (p) => <I {...p} d={<polyline points="9 18 15 12 9 6" />} />;
-const ChevronDown = (p) => <I {...p} d={<polyline points="6 9 12 15 18 9" />} />;
-const ArrowLeft = (p) => <I {...p} d={<><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></>} />;
-const User = (p) => <I {...p} d={<><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></>} />;
-const Activity = (p) => <I {...p} d={<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />} />;
-const Ruler = (p) => <I {...p} d={<><path d="M21.3 15.3a2.4 2.4 0 010 3.4l-2.6 2.6a2.4 2.4 0 01-3.4 0L2.7 8.7a2.4 2.4 0 010-3.4l2.6-2.6a2.4 2.4 0 013.4 0z" /><path d="M14.5 12.5l2-2" /><path d="M11.5 9.5l2-2" /><path d="M8.5 6.5l2-2" /><path d="M17.5 15.5l2-2" /></>} />;
-const Shield = (p) => <I {...p} d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />;
-const BarChart3 = (p) => <I {...p} d={<><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></>} />;
-const Calendar = (p) => <I {...p} d={<><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></>} />;
-const Eye = (p) => <I {...p} d={<><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>} />;
-const Info = (p) => <I {...p} d={<><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></>} />;
-const Zap = (p) => <I {...p} d={<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />} />;
-const AlertTriangle = (p) => <I {...p} d={<><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></>} />;
-const Users = (p) => <I {...p} d={<><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" /></>} />;
-const Globe = (p) => <I {...p} d={<><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></>} />;
-const Smartphone = (p) => <I {...p} d={<><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></>} />;
-const Sun = (p) => <I {...p} d={<><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></>} />;
-const Baby = (p) => <I {...p} d={<><circle cx="12" cy="12" r="10" /><path d="M9 12h.01M15 12h.01" /><path d="M10 16a3.5 3.5 0 004 0" /></>} />;
-const Printer = (p) => <I {...p} d={<><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></>} />;
-const Share2 = (p) => <I {...p} d={<><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></>} />;
-const Check = (p) => <I {...p} d={<polyline points="20 6 9 17 4 12" />} />;
-
-// ═══════════════════════════════════════════════════════════════════
-// UI COMPONENTS
-// ═══════════════════════════════════════════════════════════════════
-
-
-const Badge = ({ children, color = "#6366f1" }) => (
-  <span
-    className="badge"
-    style={{ color, backgroundColor: `${color}18` }}
-  >
-    {children}
-  </span>
-);
-
-const Card = ({ children, className = "", onClick, style }) => {
-  const classes = [
-    "card",
-    onClick ? "card--clickable" : "",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  return (
-    <div className={classes} onClick={onClick} style={style}>
-      {children}
-    </div>
-  );
+const calculateAge = (birthMonth) => {
+  const today = new Date();
+  const birth = parseBirthMonth(birthMonth);
+  let age = today.getFullYear() - birth.getFullYear();
+  if (today.getMonth() < birth.getMonth()) age--;
+  return Math.max(0, age);
 };
 
-const Button = ({
-  children,
-  onClick,
-  variant = "primary",
-  size = "md",
-  icon,
-  disabled,
-  className = "",
-  ariaLabel,
-}) => (
-  <button
-    className={`btn btn--${variant} btn--${size} ${className}`}
-    onClick={onClick}
-    disabled={disabled}
-    aria-label={ariaLabel || undefined}
-  >
-    {icon}
-    {children}
+const calculateAgeAtDate = (birthMonth, measureDate) => {
+  const birth = parseBirthMonth(birthMonth);
+  const d = new Date(measureDate + "T00:00:00");
+  return (d - birth) / (365.25 * 24 * 60 * 60 * 1000);
+};
+
+const sortMeasurements = (ms) => !ms ? [] : [...ms].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+const calculateGrowthRate = (sorted) => {
+  if (!sorted || sorted.length < 2) return null;
+  const last = sorted[sorted.length-1];
+  const prev = sorted[sorted.length-2];
+  const days = (new Date(last.date) - new Date(prev.date)) / (1000*60*60*24);
+  if (days < 30) return null;
+  return (last.al - prev.al) / (days / 365.25);
+};
+
+const getRiskLevel = (rate) => {
+  if (rate === null) return { label: "N/A", color: "#94a3b8" };
+  if (rate <= GROWTH_THRESHOLDS.normal) return { label: "Normal", color: COLORS.success };
+  if (rate <= GROWTH_THRESHOLDS.borderline) return { label: "Modéré", color: COLORS.warning };
+  if (rate <= GROWTH_THRESHOLDS.rapid) return { label: "Rapide", color: "#f97316" };
+  return { label: "Très rapide", color: COLORS.danger };
+};
+
+const calculateRiskScore = (p) => {
+  let s = 0; const rf = p.riskFactors || {};
+  if (rf.familyHistory === "2") s += 3; else if (rf.familyHistory === "1") s += 2;
+  if (rf.asianOrigin) s += 2;
+  if (rf.screenTime === "high") s += 2; else if (rf.screenTime === "moderate") s += 1;
+  if (rf.outdoorTime === "low") s += 2; else if (rf.outdoorTime === "moderate") s += 1;
+  if (rf.earlyOnset) s += 2;
+  const age = calculateAge(p.birthDate);
+  if (age < 8) s += 2; else if (age < 10) s += 1;
+  return Math.min(s, 15);
+};
+
+const getRecommendedTreatments = (p, sorted) => {
+  const age = calculateAge(p.birthDate);
+  const rate = calculateGrowthRate(sorted);
+  const lastAL = sorted.length > 0 ? sorted[sorted.length-1].al : null;
+  const recs = [];
+  
+  if (age >= 6) recs.push({...TREATMENTS.dims, priority: (lastAL > 25 || rate > 0.2) ? 1 : 2, reason: "1ère ligne optique non invasive"});
+  if (age >= 6) recs.push({...TREATMENTS.hal, priority: (lastAL > 25 || rate > 0.2) ? 1 : 2, reason: "1ère ligne optique alternative"});
+  if (age >= 7 && (rate > 0.2 || lastAL > 25)) recs.push({...TREATMENTS.orthoK, priority: 1, reason: "Efficacité forte, port nocturne"});
+  if (age >= 8 && rate > 0.1) recs.push({...TREATMENTS.atropine001, priority: 2, reason: "À considérer en monothérapie ou combinaison"});
+  if (lastAL > 26 || (rate > 0.3 && lastAL > 25)) recs.push({...TREATMENTS.atropine005, priority: 1, reason: " LA > 26mm ou forte progression"});
+
+  return recs.sort((a,b) => a.priority - b.priority);
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ICONES SVG
+// ═══════════════════════════════════════════════════════════════════
+const I = ({ d, size=16, color="currentColor" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>
+);
+const Icon = {
+  Plus: (p) => <I {...p} d="M12 5v14M5 12h14"/>,
+  Trash: (p) => <I {...p} d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>,
+  Edit: (p) => <I {...p} d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>,
+  Save: (p) => <I {...p} d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM7 21v-8h10v8M7 3v5h8"/>,
+  X: (p) => <I {...p} d="M18 6L6 18M6 6l12 12"/>,
+  Info: (p) => <I {...p} d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-14v.01M12 12v4"/>,
+  Alert: (p) => <I {...p} d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17v.01"/>,
+  Ruler: (p) => <I {...p} d="M21.3 15.3l-2.6 2.6M2.7 8.7l2.6-2.6M14.5 12.5l2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2M2.7 8.7L8.7 2.7l12.6 12.6-6 6z"/>,
+  Chart: (p) => <I {...p} d="M18 20V10M12 20V4M6 20v-6"/>,
+  Shield: (p) => <I {...p} d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
+  User: (p) => <I {...p} d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z"/>,
+  Activity: (p) => <I {...p} d="M22 12h-4l-3 9L9 3l-3 9H2"/>,
+  Calendar: (p) => <I {...p} d="M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM16 2v4M8 2v4M3 10h18"/>,
+  Check: (p) => <I {...p} d="M20 6L9 17l-5-5"/>,
+  Copy: (p) => <I {...p} d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M12 2v4a2 2 0 002 2h4M12 2a2 2 0 012 2"/>,
+  Printer: (p) => <I {...p} d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/>,
+  Zap: (p) => <I {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// COMPOSANTS UI DE BASE
+// ═══════════════════════════════════════════════════════════════════
+
+const Badge = ({ children, color="#6366f1" }) => (
+  <span className="badge" style={{color, backgroundColor: color+'15'}}>{children}</span>
+);
+
+const Button = ({ children, onClick, variant="primary", size="md", icon, disabled, className="" }) => (
+  <button className={`btn btn-${variant} btn-${size} ${className}`} onClick={onClick} disabled={disabled}>
+    {icon}{children}
   </button>
 );
 
-const Input = ({
-  label,
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  min,
-  max,
-  step,
-  required,
-  id: externalId,
-}) => {
-  const fieldId = externalId || useId();
-
-  const handleChange = useCallback(
-    (e) => onChange(e.target.value),
-    [onChange]
-  );
-
+const Input = ({ label, onChange, id:extId, ...props }) => {
+  const id = extId || useId();
   return (
     <div className="form-group">
-      {label && (
-        <label className="form-label" htmlFor={fieldId}>
-          {label}
-        </label>
-      )}
-      <input
-        id={fieldId}
-        className="form-input"
-        type={type}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        min={min}
-        max={max}
-        step={step}
-        required={required}
-      />
+      {label && <label className="form-label" htmlFor={id}>{label}</label>}
+      <input id={id} className="form-input" onChange={e => onChange(e.target.value)} {...props} />
     </div>
   );
 };
 
-const Select = ({
-  label,
-  value,
-  onChange,
-  options,
-  id: externalId,
-}) => {
-  const fieldId = externalId || useId();
-
-  const handleChange = useCallback(
-    (e) => onChange(e.target.value),
-    [onChange]
-  );
-
+const Select = ({ label, value, onChange, options, id:extId }) => {
+  const id = extId || useId();
   return (
     <div className="form-group">
-      {label && (
-        <label className="form-label" htmlFor={fieldId}>
-          {label}
-        </label>
-      )}
-      <select
-        id={fieldId}
-        className="form-select"
-        value={value ?? ""}
-        onChange={handleChange}
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
+      {label && <label className="form-label" htmlFor={id}>{label}</label>}
+      <select id={id} className="form-select" value={value || ""} onChange={e => onChange(e.target.value)}>
+        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
   );
 };
 
-const Toggle = ({ label, checked, onChange, id: externalId }) => {
-  const fieldId = externalId || useId();
-
-  const handleClick = useCallback(() => onChange(!checked), [checked, onChange]);
-
-  return (
-    <div className="toggle" role="switch" aria-checked={checked} tabIndex={0}
-      onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); handleClick(); } }}>
-      <div
-        className={`toggle__track ${checked ? "toggle__track--on" : ""}`}
-        onClick={handleClick}
-        id={fieldId}
-      >
-        <div className="toggle__thumb" />
-      </div>
-      <label htmlFor={fieldId} style={{ cursor: "pointer" }}>
-        {label}
-      </label>
+const Toggle = ({ label, checked, onChange }) => (
+  <label className="toggle">
+    <div className={`toggle__track ${checked?'toggle__track--on':''}`} onClick={() => onChange(!checked)}>
+      <div className="toggle__thumb"/>
     </div>
-  );
-};
+    <span>{label}</span>
+  </label>
+);
 
 const StatCard = ({ label, value, icon, color, subtitle }) => (
-  <div
-    className="stat-card"
-    style={{
-      background: `linear-gradient(135deg, ${color}08, ${color}15)`,
-      border: `1px solid ${color}20`,
-    }}
-  >
-    <div className="flex justify-between items-start">
-      <div>
-        <div className="stat-card__label">{label}</div>
-        <div className="stat-card__value" style={{ color }}>
-          {value}
-        </div>
-        {subtitle && <div className="stat-card__subtitle">{subtitle}</div>}
-      </div>
-      <div className="stat-card__icon" style={{ background: `${color}15` }}>
-        {icon}
-      </div>
+  <div className="stat-card" style={{background: color+'08', border: '1px solid '+color+'20'}}>
+    <div className="flex justify-between items-center mb-10">
+      <span className="stat-label">{label}</span>
+      <span style={{color, background: color+'15', padding:6, borderRadius:8, display:'flex'}}>{icon}</span>
     </div>
+    <div className="stat-value" style={{color}}>{value}</div>
+    {subtitle && <div className="stat-sub">{subtitle}</div>}
   </div>
 );
 
 // ═══════════════════════════════════════════════════════════════════
-// PATIENT LIST
+// PAGE D'ACCUEIL (DISCLAIMER)
 // ═══════════════════════════════════════════════════════════════════
 
-function PatientList({ patients, searchTerm, onSearch, onSelect, onAdd }) {
-  const handleSearch = useCallback((e) => onSearch(e.target.value), [onSearch]);
-
+function WelcomePage({ onAccept }) {
   return (
-    <div>
-      <div className="flex gap-12 mb-24 items-center">
-        <div className="search-bar">
-          <Search size={18} color="#64748b" />
-          <input
-            className="search-bar__input"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Rechercher par initiales, ID ou praticien..."
-            aria-label="Rechercher un patient"
-          />
+    <div className="welcome-container">
+      <div className="disclaimer-card">
+        <h1 className="disclaimer-title">Conditions d'utilisation</h1>
+        <div className="disclaimer-text">
+          <p>Cet outil est conçu comme un complément aux diagnostics ophtalmologiques, aidant les médecins à choisir le traitement freinateur de myopie le plus adapté à chaque patient. Il doit être utilisé en complément d'un examen ophtalmologique complet et des tests diagnostiques et mesures nécessaires pour les candidats aux traitements freinateurs.</p>
+          <p>Les résultats obtenus par le calculateur ne constituent ni une recommandation médicale. Les médecins utilisant cet outil doivent prendre leurs propres décisions quant au traitement approprié pour leurs patients et sont seuls responsables du résultat.</p>
+          <p>En utilisant cet outil, vous acceptez de dégager de toute responsabilité ce site (ainsi que ses administrateurs, directeurs, employés et prestataires tiers) pour tous dommages, coûts, réclamations et pertes pouvant survenir directement ou indirectement du fait de votre utilisation de l'outil, que ce soit conformément aux présentes conditions ou non.</p>
+          <p>Nous déclinons toute responsabilité dans les résultats ou données obtenus par l’utilisation des outils proposés par ce site.</p>
+        </div>
+        <div className="disclaimer-action">
+          <Button variant="primary" size="lg" onClick={onAccept}>J'accepte et j'accède à l'outil</Button>
         </div>
       </div>
-
-      {patients.length === 0 ? (
-        <Card className="empty-state">
-          <div className="empty-state__icon">👁️</div>
-          <h2 className="empty-state__title">Aucun patient</h2>
-          <p className="empty-state__text">Commencez par ajouter votre premier patient</p>
-          <Button onClick={onAdd} icon={<Plus size={18} />}>Ajouter un patient</Button>
-        </Card>
-      ) : (
-        <div className="flex flex-col gap-12">
-          {patients.map((patient) => (
-            <PatientRow key={patient.id} patient={patient} onSelect={onSelect} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
 
-function PatientRow({ patient, onSelect }) {
-  const handleClick = useCallback(() => onSelect(patient), [patient, onSelect]);
-
-  const age = useMemo(() => calculateAge(patient.birthDate), [patient.birthDate]);
-  const sorted = useMemo(() => sortMeasurements(patient.measurements), [patient.measurements]);
-  const lastMeasurement = sorted.length > 0 ? sorted[sorted.length - 1] : null;
-  const growthRate = useMemo(() => calculateGrowthRate(sorted), [sorted]);
-  const risk = useMemo(() => getRiskLevel(growthRate), [growthRate]);
-  const riskScore = useMemo(() => calculateRiskScore(patient), [patient]);
-
-  return (
-    <Card onClick={handleClick} className="card--clickable">
-      <div className="flex justify-between items-center flex-wrap gap-12">
-        <div className="flex items-center gap-16">
-          <div className="avatar avatar--sm">
-            {patient.initials || "?"}
-          </div>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: 16 }}>
-              {patient.initials}{" "}
-              <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 400 }}>
-                {patient.patientId}
-              </span>
-            </div>
-            <div className="flex gap-12 mt-6" style={{ fontSize: 13, color: "#64748b" }}>
-              <span>{age} ans</span>
-              {patient.surgeon && <span>{patient.surgeon}</span>}
-              {lastMeasurement && <span>LA : {lastMeasurement.al} mm</span>}
-              {sorted.length > 0 && (
-                <span>
-                  {sorted.length} mesure{sorted.length > 1 ? "s" : ""}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-12">
-          {growthRate !== null && (
-            <Badge color={risk.color}>
-              {risk.label} ({growthRate.toFixed(2)} mm/an)
-            </Badge>
-          )}
-          {riskScore >= 8 && <Badge color="#ef4444">Risque élevé</Badge>}
-          <ChevronRight size={20} color="#64748b" />
-        </div>
-      </div>
-    </Card>
-  );
-}
-
 // ═══════════════════════════════════════════════════════════════════
-// PATIENT FORM
+// FORMULAIRE PATIENT
 // ═══════════════════════════════════════════════════════════════════
 
-const DEFAULT_RISK_FACTORS = {
-  familyHistory: "0",
-  asianOrigin: false,
-  screenTime: "moderate",
-  outdoorTime: "moderate",
-  nearWork: "moderate",
-  earlyOnset: false,
-  sleepDuration: "normal",
-  currentRefraction: "",
-  annualProgression: "",
-};
+const DEFAULT_RF = { familyHistory: "0", asianOrigin: false, screenTime: "moderate", outdoorTime: "moderate", earlyOnset: false, currentRefraction: "" };
 
-function PatientForm({ patient, onSave, onCancel }) {
+function PatientForm({ patient, onSave }) {
   const [form, setForm] = useState({
-    surgeon: patient?.surgeon || "",
-    initials: patient?.initials || "",
-    patientId: patient?.patientId || "",
-    birthDate: patient?.birthDate || "",
-    gender: patient?.gender || "M",
-    riskFactors: { ...DEFAULT_RISK_FACTORS, ...patient?.riskFactors },
-    notes: patient?.notes || "",
+    surgeon: patient?.surgeon || "", initials: patient?.initials || "",
+    birthDate: patient?.birthDate || "", gender: patient?.gender || "M",
+    riskFactors: { ...DEFAULT_RF, ...patient?.riskFactors }, notes: patient?.notes || ""
   });
 
-  const update = useCallback(
-    (field) => (value) => setForm((p) => ({ ...p, [field]: value })),
-    []
-  );
+  const up = (f, v) => setForm(p => ({ ...p, [f]: v }));
+  const upRF = (f, v) => setForm(p => ({ ...p, riskFactors: { ...p.riskFactors, [f]: v } }));
 
-  const updateRF = useCallback(
-    (field) => (value) =>
-      setForm((p) => ({
-        ...p,
-        riskFactors: { ...p.riskFactors, [field]: value },
-      })),
-    []
-  );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (form.initials && form.birthDate) {
+      const normalized = { ...form, birthDate: normalizeBirthInput(form.birthDate) };
+      onSave(normalized);
+    }
+  };
 
-  const handleNotesChange = useCallback(
-    (e) => setForm((p) => ({ ...p, notes: e.target.value })),
-    []
-  );
-
-  const handleSave = useCallback(() => {
-    if (form.initials && form.birthDate) onSave(form);
-  }, [form, onSave]);
-
-  const riskScore = useMemo(
-    () => calculateRiskScore({ ...form, birthDate: form.birthDate }),
-    [form]
-  );
-
+  const score = calculateRiskScore(form);
   const isValid = form.initials && form.birthDate;
 
-  const riskColor =
-    riskScore >= 10
-      ? COLORS.danger
-      : riskScore >= 6
-        ? COLORS.warning
-        : COLORS.success;
-
-  const riskGradient =
-    riskScore >= 10
-      ? `linear-gradient(90deg, ${COLORS.warning}, ${COLORS.danger})`
-      : riskScore >= 6
-        ? `linear-gradient(90deg, ${COLORS.success}, ${COLORS.warning})`
-        : COLORS.success;
-
   return (
-    <div>
-      <h2 style={{ marginBottom: 24, fontSize: 22, fontWeight: 700 }}>
-        {patient ? "Modifier le patient" : "Nouveau patient"}
-      </h2>
-
-      <Card className="mb-20">
-        <h3 className="flex items-center gap-8 mb-16" style={{ fontSize: 16, fontWeight: 600 }}>
-          <User size={18} color={COLORS.primary} /> Identité pseudonymisée
-        </h3>
-        <div className="grid-2">
-          <Input label="Praticien" value={form.surgeon} onChange={update("surgeon")} placeholder="Nom du praticien" />
-          <Input label="Initiales patient *" value={form.initials} onChange={update("initials")} placeholder="Ex: ML" required />
-          {form.patientId && (
-            <div className="form-group">
-              <label className="form-label">Id patient</label>
-              <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default", userSelect: "all" }}>{form.patientId}</div>
-            </div>
-          )}
-          <Input label="Mois et année de naissance *" type="month" value={form.birthDate} onChange={update("birthDate")} required />
-          
-          <Select
-            label="Genre *"
-            value={form.gender}
-            onChange={update("gender")}
-            options={[
-              { value: "M", label: "Masculin" },
-              { value: "F", label: "Féminin" },
-            ]}
-          />
-          {form.birthDate && (
-            <div className="form-group">
-              <label className="form-label">Âge estimé</label>
-              <div className="form-input" style={{ backgroundColor: "#f1f5f9", color: "#475569", cursor: "default" }}>{calculateAge(form.birthDate)} ans</div>
-            </div>
-          )}
-        </div>
-      </Card>
-
-      <Card className="mb-20">
-        <h3 className="flex items-center gap-8 mb-16" style={{ fontSize: 16, fontWeight: 600 }}>
-          <AlertTriangle size={18} color={COLORS.warning} /> Facteurs de risque
-        </h3>
-        <div className="grid-2">
-          <Select
-            label="ATCD familiaux de myopie"
-            value={form.riskFactors.familyHistory}
-            onChange={updateRF("familyHistory")}
-            options={[
-              { value: "0", label: "Aucun parent myope" },
-              { value: "1", label: "1 parent myope" },
-              { value: "2", label: "2 parents myopes" },
-            ]}
-          />
-          <Select
-            label="Temps d'écran quotidien"
-            value={form.riskFactors.screenTime}
-            onChange={updateRF("screenTime")}
-            options={[
-              { value: "low", label: "Faible (< 1h/j)" },
-              { value: "moderate", label: "Modéré (1-3h/j)" },
-              { value: "high", label: "Élevé (> 3h/j)" },
-            ]}
-          />
-          <Select
-            label="Temps en extérieur"
-            value={form.riskFactors.outdoorTime}
-            onChange={updateRF("outdoorTime")}
-            options={[
-              { value: "high", label: "Élevé (> 2h/j)" },
-              { value: "moderate", label: "Modéré (1-2h/j)" },
-              { value: "low", label: "Faible (< 1h/j)" },
-            ]}
-          />
-          <Select
-            label="Travail de près (lecture, etc.)"
-            value={form.riskFactors.nearWork}
-            onChange={updateRF("nearWork")}
-            options={[
-              { value: "low", label: "Faible" },
-              { value: "moderate", label: "Modéré" },
-              { value: "high", label: "Intensif" },
-            ]}
-          />
-          <Select
-            label="Durée de sommeil"
-            value={form.riskFactors.sleepDuration}
-            onChange={updateRF("sleepDuration")}
-            options={[
-              { value: "normal", label: "Normale (> 9h)" },
-              { value: "short", label: "Courte (< 9h)" },
-            ]}
-          />
-          <Input
-            label="Réfraction actuelle (dioptries)"
-            type="number"
-            value={form.riskFactors.currentRefraction}
-            onChange={updateRF("currentRefraction")}
-            placeholder="ex: -2.50"
-            step="0.25"
-          />
-          <Input
-            label="Progression annuelle (D/an)"
-            type="number"
-            value={form.riskFactors.annualProgression}
-            onChange={updateRF("annualProgression")}
-            placeholder="ex: -0.75"
-            step="0.25"
-          />
-        </div>
-
-        <div className="flex gap-24 mt-20 flex-wrap">
-          <Toggle label="Origine asiatique" checked={form.riskFactors.asianOrigin} onChange={updateRF("asianOrigin")} />
-          <Toggle label="Début précoce (< 7 ans)" checked={form.riskFactors.earlyOnset} onChange={updateRF("earlyOnset")} />
-        </div>
-
-        <div className="risk-bar">
-          <div className="flex justify-between items-center mb-8">
-            <span style={{ fontSize: 14, fontWeight: 600 }}>Score de risque</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: riskColor }}>
-              {riskScore}/15
-            </span>
-          </div>
-          <div className="risk-bar__track">
-            <div
-              className="risk-bar__fill"
-              style={{ width: `${(riskScore / 15) * 100}%`, background: riskGradient }}
-            />
-          </div>
-          <div style={{ fontSize: 12, color: "#64748b", marginTop: 6 }}>
-            {riskScore < 4 ? "Risque faible" : riskScore < 7 ? "Risque modéré" : riskScore < 10 ? "Risque élevé" : "Risque très élevé"}
-          </div>
-        </div>
-      </Card>
-
-      <Card className="mb-20">
-        <h3 style={{ marginBottom: 12, fontSize: 16, fontWeight: 600 }}>Notes cliniques</h3>
-        <textarea
-          className="form-textarea"
-          value={form.notes}
-          onChange={handleNotesChange}
-          placeholder="Notes libres..."
-          rows={3}
-        />
-      </Card>
-
-      <div className="flex gap-12 justify-end">
-        <Button variant="secondary" onClick={onCancel} icon={<X size={16} />}>
-          Annuler
-        </Button>
-        <Button onClick={handleSave} icon={<Save size={16} />} disabled={!isValid}>
-          {patient ? "Enregistrer" : "Créer le patient"}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// MEASUREMENTS TAB
-// ═══════════════════════════════════════════════════════════════════
-
-function MeasurementsTab({
-  sortedMeasurements,
-  patient,
-  onAdd,
-  onEdit,
-  onDelete,
-  showAdd,
-  setShowAdd,
-}) {
-  const [nm, setNm] = useState({
-    date: getLocalDateString(),
-    alOD: "",
-    alOG: "",
-    refOD: "",
-    refOG: "",
-    treatment: "",
-    notes: "",
-  });
-
-  const updateField = useCallback(
-    (field) => (value) => setNm((p) => ({ ...p, [field]: value })),
-    []
-  );
-
-  const handleAdd = useCallback(() => {
-    const od = parseFloat(nm.alOD);
-    const og = parseFloat(nm.alOG);
-    if (!nm.date || (isNaN(od) && isNaN(og))) return;
-    const al = !isNaN(od) && !isNaN(og) ? Math.max(od, og) : !isNaN(od) ? od : og;
-    onAdd({ ...nm, al, alOD: isNaN(od) ? null : od, alOG: isNaN(og) ? null : og });
-    setNm({
-      date: getLocalDateString(),
-      alOD: "", alOG: "", refOD: "", refOG: "", treatment: "", notes: "",
-    });
-  }, [nm, onAdd]);
-
-  const toggleAdd = useCallback(() => setShowAdd((v) => !v), [setShowAdd]);
-  const canAdd = nm.date && (nm.alOD || nm.alOG);
-
-  const reversed = useMemo(
-    () => [...sortedMeasurements].reverse(),
-    [sortedMeasurements]
-  );
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-16">
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Historique des mesures</h3>
-        <Button
-          size="sm"
-          onClick={toggleAdd}
-          icon={showAdd ? <X size={14} /> : <Plus size={14} />}
-        >
-          {showAdd ? "Fermer" : "Nouvelle mesure"}
-        </Button>
-      </div>
-
-      {showAdd && (
-        <Card className="card--form mb-16">
-          <h4 style={{ marginBottom: 16, color: "#6366f1", fontWeight: 600 }}>
-            Ajouter une mesure
-          </h4>
-          <div className="grid-3">
-            <Input label="Date *" type="date" value={nm.date} onChange={updateField("date")} />
-            <Input label="LA OD (mm)" type="number" value={nm.alOD} onChange={updateField("alOD")} placeholder="ex: 24.50" step="0.01" min="20" max="35" />
-            <Input label="LA OG (mm)" type="number" value={nm.alOG} onChange={updateField("alOG")} placeholder="ex: 24.30" step="0.01" min="20" max="35" />
-            <Input label="Réfraction OD (D)" type="number" value={nm.refOD} onChange={updateField("refOD")} placeholder="ex: -2.50" step="0.25" />
-            <Input label="Réfraction OG (D)" type="number" value={nm.refOG} onChange={updateField("refOG")} placeholder="ex: -2.25" step="0.25" />
-            <Select
-              label="Traitement en cours"
-              value={nm.treatment}
-              onChange={updateField("treatment")}
-              options={[
-                { value: "", label: "Aucun" },
-                ...Object.entries(TREATMENTS).map(([k, t]) => ({ value: k, label: t.name })),
-              ]}
-            />
-          </div>
-          <div className="mt-12">
-            <Input label="Notes" value={nm.notes} onChange={updateField("notes")} placeholder="Observations..." />
-          </div>
-          <div className="flex justify-end mt-16">
-            <Button onClick={handleAdd} icon={<Save size={16} />} disabled={!canAdd}>
-              Enregistrer
-            </Button>
-          </div>
-        </Card>
-      )}
-
-      {sortedMeasurements.length === 0 ? (
-        <Card style={{ textAlign: "center", padding: 40 }}>
-          <Ruler size={32} color="#64748b" />
-          <p style={{ color: "#64748b", marginTop: 12 }}>Aucune mesure enregistrée</p>
-          <Button size="sm" onClick={() => setShowAdd(true)} icon={<Plus size={14} />}>
-            Ajouter la première mesure
-          </Button>
-        </Card>
-      ) : (
-        <div className="flex flex-col gap-8">
-          {reversed.map((m, i) => (
-            <MeasurementRow
-              key={m.id}
-              measurement={m}
-              prevMeasurement={i < reversed.length - 1 ? reversed[i + 1] : null}
-              patient={patient}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MeasurementRow({ measurement: m, prevMeasurement: prev, patient, onEdit, onDelete }) {
-  const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState(null);
-
-  const handleDelete = useCallback(() => onDelete(m.id), [m.id, onDelete]);
-  const handleStartEdit = useCallback(() => {
-    setEditForm({
-      date: m.date,
-      alOD: m.alOD || "",
-      alOG: m.alOG || "",
-      refOD: m.refOD || "",
-      refOG: m.refOG || "",
-      treatment: m.treatment || "",
-      notes: m.notes || "",
-    });
-    setEditing(true);
-  }, [m]);
-
-  const handleCancelEdit = useCallback(() => { setEditing(false); setEditForm(null); }, []);
-
-  const handleSaveEdit = useCallback(() => {
-    const od = parseFloat(editForm.alOD);
-    const og = parseFloat(editForm.alOG);
-    if (!editForm.date || (isNaN(od) && isNaN(og))) return;
-    const al = !isNaN(od) && !isNaN(og) ? Math.max(od, og) : !isNaN(od) ? od : og;
-    onEdit({ ...m, ...editForm, al, alOD: isNaN(od) ? null : od, alOG: isNaN(og) ? null : og });
-    setEditing(false);
-    setEditForm(null);
-  }, [editForm, m, onEdit]);
-
-  const updateEditField = useCallback(
-    (field) => (value) => setEditForm((p) => ({ ...p, [field]: value })),
-    []
-  );
-
-  const ageAt = useMemo(
-    () => calculateAgeAtDate(patient.birthDate, m.date),
-    [patient.birthDate, m.date]
-  );
-
-  const growth = useMemo(() => {
-    if (!prev) return null;
-    const daysDiff =
-      (new Date(m.date + "T00:00:00") - new Date(prev.date + "T00:00:00")) /
-      (1000 * 60 * 60 * 24);
-    if (daysDiff < 30) return null;
-    const rate = (m.al - prev.al) / (daysDiff / 365.25);
-    return Math.abs(rate) < 5 ? rate : null;
-  }, [m, prev]);
-
-  const treatment = m.treatment ? TREATMENTS[m.treatment] : null;
-
-  if (editing && editForm) {
-    return (
-      <Card className="card--form">
-        <h4 style={{ marginBottom: 12, color: COLORS.primary, fontWeight: 600 }}>Modifier la mesure</h4>
-        <div className="grid-3">
-          <Input label="Date *" type="date" value={editForm.date} onChange={updateEditField("date")} />
-          <Input label="LA OD (mm)" type="number" value={editForm.alOD} onChange={updateEditField("alOD")} step="0.01" min="20" max="35" />
-          <Input label="LA OG (mm)" type="number" value={editForm.alOG} onChange={updateEditField("alOG")} step="0.01" min="20" max="35" />
-          <Input label="Réfraction OD (D)" type="number" value={editForm.refOD} onChange={updateEditField("refOD")} step="0.25" />
-          <Input label="Réfraction OG (D)" type="number" value={editForm.refOG} onChange={updateEditField("refOG")} step="0.25" />
-          <Select
-            label="Traitement en cours"
-            value={editForm.treatment}
-            onChange={updateEditField("treatment")}
-            options={[
-              { value: "", label: "Aucun" },
-              ...Object.entries(TREATMENTS).map(([k, t]) => ({ value: k, label: t.name })),
-            ]}
-          />
-        </div>
-        <div className="mt-12">
-          <Input label="Notes" value={editForm.notes} onChange={updateEditField("notes")} placeholder="Observations..." />
-        </div>
-        <div className="flex gap-8 justify-end mt-16">
-          <Button variant="secondary" size="sm" onClick={handleCancelEdit} icon={<X size={14} />}>Annuler</Button>
-          <Button size="sm" onClick={handleSaveEdit} icon={<Save size={14} />}>Enregistrer</Button>
-        </div>
-      </Card>
-    );
-  }
-
-  return (
-    <Card className="measurement-row">
-      <div className="flex justify-between items-start">
-        <div style={{ flex: 1 }}>
-          <div className="flex items-center gap-12 flex-wrap mb-8">
-            <span className="measurement-row__date">
-              {new Date(m.date + "T00:00:00").toLocaleDateString("fr-FR", {
-                day: "numeric", month: "long", year: "numeric",
-              })}
-            </span>
-            <Badge color="#64748b">{ageAt.toFixed(1)} ans</Badge>
-            {treatment && (
-              <Badge color={treatment.color}>
-                {treatment.icon} {treatment.name}
-              </Badge>
-            )}
-          </div>
-          <div className="measurement-row__values">
-            {m.alOD && <span>LA OD : <strong>{m.alOD} mm</strong></span>}
-            {m.alOG && <span>LA OG : <strong>{m.alOG} mm</strong></span>}
-            {m.refOD && <span>Réf OD : <strong>{m.refOD} D</strong></span>}
-            {m.refOG && <span>Réf OG : <strong>{m.refOG} D</strong></span>}
-          </div>
-          {growth !== null && (
-            <div className="measurement-row__growth">
-              <span style={{ color: getRiskLevel(growth).color, fontWeight: 600 }}>
-                {growth > 0 ? "+" : ""}
-                {growth.toFixed(2)} mm/an
-              </span>
-              <span style={{ color: "#64748b" }}> vs mesure précédente</span>
-            </div>
-          )}
-          {m.notes && <div className="measurement-row__notes">{m.notes}</div>}
-        </div>
-        <div className="flex gap-4">
-          <button className="delete-btn" onClick={handleStartEdit} aria-label="Modifier cette mesure">
-            <Edit3 size={16} />
-          </button>
-          <button className="delete-btn" onClick={handleDelete} aria-label="Supprimer cette mesure">
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// TREATMENTS TAB
-// ═══════════════════════════════════════════════════════════════════
-
-const PRIORITY_LABELS = {
-  haute: { text: "Priorité haute", color: COLORS.danger },
-  "à considérer": { text: "À considérer", color: "#f97316" },
-  standard: { text: "Standard", color: COLORS.success },
-};
-
-function TreatmentsTab({ recommendations }) {
-  const [expanded, setExpanded] = useState(null);
-
-  const toggle = useCallback(
-    (i) => setExpanded((prev) => (prev === i ? null : i)),
-    []
-  );
-
-  return (
-    <div>
-      <div className="alert alert--info mb-20 items-start">
-        <Info size={20} color={COLORS.info} style={{ flexShrink: 0, marginTop: 2 }} />
-        <div className="alert--info alert__body">
-          Recommandations automatiques basées sur l'âge, la LA, le taux de
-          progression et le profil de risque. Elles ne se substituent pas au
-          jugement clinique.
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-12">
-        {recommendations.map((rec, i) => {
-          const isOpen = expanded === i;
-          const pLabel = PRIORITY_LABELS[rec.priority] || PRIORITY_LABELS.standard;
-          return (
-            <TreatmentCard
-              key={i}
-              rec={rec}
-              index={i}
-              isOpen={isOpen}
-              onToggle={toggle}
-              priorityLabel={pLabel}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function TreatmentCard({ rec, index, isOpen, onToggle, priorityLabel }) {
-  const handleClick = useCallback(() => onToggle(index), [index, onToggle]);
-
-  return (
-    <Card
-      onClick={handleClick}
-      className="card--clickable treatment-card"
-      style={{ borderLeft: `4px solid ${rec.color}` }}
-    >
-      <div className="treatment-card__inner">
-        <div className="flex justify-between items-center flex-wrap gap-8">
-          <div className="flex items-center gap-12">
-            <span style={{ fontSize: 24 }}>{rec.icon}</span>
-            <div>
-              <div style={{ fontWeight: 600, fontSize: 16 }}>{rec.name}</div>
-              <div style={{ fontSize: 13, color: "#64748b", marginTop: 2 }}>
-                {rec.efficacy}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-8">
-            <Badge color={priorityLabel.color}>{priorityLabel.text}</Badge>
-            {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          </div>
-        </div>
-
-        {isOpen && (
-          <div style={{ marginTop: 12, fontSize: 13 }}>
-            <div
-              className="treatment-card__reason"
-              style={{
-                background: `${rec.color}08`,
-                borderLeft: `3px solid ${rec.color}40`,
-              }}
-            >
-              {rec.reason}
-            </div>
-            <div className="grid-2 mt-12">
-              <div className="treatment-card__detail">
-                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                  Tranche d'âge
-                </div>
-                {rec.ageRange[0]} – {rec.ageRange[1]} ans
-              </div>
-              <div className="treatment-card__detail">
-                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                  Effets secondaires
-                </div>
-                {rec.sideEffects}
-              </div>
-              <div className="treatment-card__detail">
-                <div style={{ fontWeight: 600, marginBottom: 4, color: "#64748b" }}>
-                  Contre-indications
-                </div>
-                {rec.contraindications.join(", ")}
-              </div>
-              <div className="treatment-card__evidence">
-                <div style={{ fontWeight: 600, marginBottom: 4, color: COLORS.info }}>
-                  Niveau de preuve
-                </div>
-                {rec.evidence}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </Card>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// CHART TAB
-// ═══════════════════════════════════════════════════════════════════
-
-const TOOLTIP_LABELS = {
-  al: "LA (max)",
-  alOD: "LA OD",
-  alOG: "LA OG",
-  emmetropic: "Norme emmétrope",
-  p75: "P75",
-  p90: "P90",
-};
-
-const tooltipFormatter = (value, name) => [
-  `${value} mm`,
-  TOOLTIP_LABELS[name] || name,
-];
-
-const TOOLTIP_STYLE = {
-  borderRadius: 12,
-  border: `1px solid ${COLORS.border}`,
-  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-};
-
-const LEGEND_ITEMS = [
-  { label: "Normale", value: "≤ 0,10 mm/an", color: COLORS.success },
-  { label: "Limite", value: "0,10 – 0,20 mm/an", color: COLORS.warning },
-  { label: "Rapide", value: "0,20 – 0,30 mm/an", color: "#f97316" },
-  { label: "Très rapide", value: "> 0,30 mm/an", color: COLORS.danger },
-];
-
-function ChartTab({ sortedMeasurements, patient }) {
-  const data = useMemo(() => {
-    if (sortedMeasurements.length === 0) return [];
-
-    const birth = parseBirthMonth(patient.birthDate);
-
-    // Build points from measurements
-    const measurePoints = sortedMeasurements.map((m) => {
-      const d = new Date(m.date + "T00:00:00");
-      const ageAt = calculateAgeAtDate(patient.birthDate, m.date);
-      const norm = getNormForAge(ageAt);
-      return {
-        ts: d.getTime(),
-        date: d.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
-        al: m.al,
-        alOD: m.alOD,
-        alOG: m.alOG,
-        emmetropic: norm.emmetropic,
-        p75: norm.p75,
-        p90: norm.p90,
-      };
-    });
-
-    // Add 1 year before first measurement and 1 year after last
-    const firstDate = new Date(sortedMeasurements[0].date + "T00:00:00");
-    const lastDate = new Date(sortedMeasurements[sortedMeasurements.length - 1].date + "T00:00:00");
-
-    const beforeDate = new Date(firstDate);
-    beforeDate.setFullYear(beforeDate.getFullYear() - 1);
-    const afterDate = new Date(lastDate);
-    afterDate.setFullYear(afterDate.getFullYear() + 1);
-
-    const ageBefore = (beforeDate - birth) / (365.25 * 24 * 60 * 60 * 1000);
-    const ageAfter = (afterDate - birth) / (365.25 * 24 * 60 * 60 * 1000);
-    const normBefore = getNormForAge(ageBefore);
-    const normAfter = getNormForAge(ageAfter);
-
-    const pointBefore = {
-      ts: beforeDate.getTime(),
-      date: beforeDate.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
-      al: null, alOD: null, alOG: null,
-      emmetropic: normBefore.emmetropic,
-      p75: normBefore.p75,
-      p90: normBefore.p90,
-    };
-
-    const pointAfter = {
-      ts: afterDate.getTime(),
-      date: afterDate.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" }),
-      al: null, alOD: null, alOG: null,
-      emmetropic: normAfter.emmetropic,
-      p75: normAfter.p75,
-      p90: normAfter.p90,
-    };
-
-    return [pointBefore, ...measurePoints, pointAfter].sort((a, b) => a.ts - b.ts);
-  }, [sortedMeasurements, patient.birthDate]);
-
-  if (data.length === 0) {
-    return (
-      <Card style={{ textAlign: "center", padding: 40 }}>
-        <BarChart3 size={32} color="#64748b" />
-        <p style={{ color: "#64748b", marginTop: 12 }}>
-          Ajoutez au moins une mesure pour voir le graphique
-        </p>
-      </Card>
-    );
-  }
-
-  const hasODOG = data.some((d) => d.alOD && d.alOG);
-
-  return (
-    <div>
-      <Card className="mb-16">
-        <h3 style={{ marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
-          Évolution de la longueur axiale
-        </h3>
-        <p style={{ marginBottom: 20, fontSize: 13, color: "#64748b" }}>
-          Courbe de suivi avec normes emmétropes (vert) et seuils (P75, P90)
-        </p>
-        <div style={{ width: "100%", height: 400 }}>
-          <ResponsiveContainer>
-            <LineChart data={data} margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="date" tick={{ fontSize: 12, fill: "#64748b" }} />
-              <YAxis domain={["auto", "auto"]} tick={{ fontSize: 12, fill: "#64748b" }} unit=" mm" />
-              <Tooltip contentStyle={TOOLTIP_STYLE} formatter={tooltipFormatter} />
-              <Legend />
-
-              <Line type="monotone" dataKey="emmetropic" stroke={COLORS.success} strokeDasharray="5 5" strokeWidth={1.5} dot={false} name="Norme emmétrope" />
-              <Line type="monotone" dataKey="p75" stroke={COLORS.warning} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P75" />
-              <Line type="monotone" dataKey="p90" stroke={COLORS.danger} strokeDasharray="3 3" strokeWidth={1} dot={false} name="P90" />
-
-              <Line type="monotone" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{ fill: COLORS.primary, r: 5 }} activeDot={{ r: 7 }} name="LA (max)" connectNulls />
-              {hasODOG && (
-                <>
-                  <Line type="monotone" dataKey="alOD" stroke="#f97316" strokeWidth={2} dot={{ fill: "#f97316", r: 4 }} name="LA OD" connectNulls />
-                  <Line type="monotone" dataKey="alOG" stroke="#06b6d4" strokeWidth={2} dot={{ fill: "#06b6d4", r: 4 }} name="LA OG" connectNulls />
-                </>
-              )}
-
-              <ReferenceLine y={26} stroke={COLORS.danger} strokeDasharray="8 4" strokeWidth={2} label={{ value: "Seuil 26mm", position: "right", fill: COLORS.danger, fontSize: 12 }} />
-            </LineChart>
-          </ResponsiveContainer>
+    <form onSubmit={handleSubmit}>
+      <Card>
+        <div className="card-header"><Icon.User color={COLORS.primary}/><h3 className="card-title">Identité pseudonymisée</h3></div>
+        <div className="form-grid">
+          <Input label="Praticien" value={form.surgeon} onChange={v=>up('surgeon',v)} placeholder="Dr. Durand" />
+          <Input label="Initiales patient *" value={form.initials} onChange={v=>up('initials',v.toUpperCase())} placeholder="Ex: ML" required maxLength={3} />
+          <Input label="Mois et année de naissance *" value={form.birthDate} onChange={v=>up('birthDate',v)} placeholder="Ex: 05/2012, 05-12, 05.2012" onBlur={()=>{ const n = normalizeBirthInput(form.birthDate); if (n !== form.birthDate) up('birthDate', n); }} required />
+          <Select label="Genre" value={form.gender} onChange={v=>up('gender',v)} options={[{value:"M",label:"Masculin"},{value:"F",label:"Féminin"}]} />
         </div>
       </Card>
 
       <Card>
-        <h4 style={{ marginBottom: 12, fontSize: 14, fontWeight: 600 }}>
-          Repères de croissance axiale annuelle
-        </h4>
-        <div className="chart-legend">
-          {LEGEND_ITEMS.map((item) => (
-            <div key={item.label} className="chart-legend__item">
-              <div className="chart-legend__dot" style={{ background: item.color }} />
-              <span>
-                <strong>{item.label}</strong> : {item.value}
-              </span>
-            </div>
-          ))}
+        <div className="card-header"><Icon.Alert color={COLORS.warning}/><h3 className="card-title">Facteurs de risque</h3></div>
+        <div className="form-grid">
+          <Select label="ATCD familiaux de myopie" value={form.riskFactors.familyHistory} onChange={v=>upRF('familyHistory',v)} options={[{value:"0",label:"Aucun parent"},{value:"1",label:"1 parent"},{value:"2",label:"2 parents"}]} />
+          <Select label="Temps d'écran quotidien" value={form.riskFactors.screenTime} onChange={v=>upRF('screenTime',v)} options={[{value:"low",label:"Faible (<1h)"},{value:"moderate",label:"Modéré (1-3h)"},{value:"high",label:"Élevé (>3h)"}]} />
+          <Select label="Temps en extérieur" value={form.riskFactors.outdoorTime} onChange={v=>upRF('outdoorTime',v)} options={[{value:"high",label:"Élevé (>2h)"},{value:"moderate",label:"Modéré (1-2h)"},{value:"low",label:"Faible (<1h)"}]} />
+          <Input label="Équivalent sphérique OD (Dioptries)" type="number" value={form.riskFactors.currentRefraction} onChange={v=>upRF('currentRefraction',v)} placeholder="-2.50" step="0.25" />
+        </div>
+        <div className="flex gap-16 mt-20 wrap">
+          <Toggle label="Origine asiatique" checked={form.riskFactors.asianOrigin} onChange={v=>upRF('asianOrigin',v)} />
+          <Toggle label="Début précoce (< 7 ans)" checked={form.riskFactors.earlyOnset} onChange={v=>upRF('earlyOnset',v)} />
+        </div>
+        <div className="risk-score-bar">
+          <div className="flex justify-between items-center">
+            <span style={{fontSize:13, fontWeight:600}}>Score de risque global</span>
+            <span style={{fontSize:20, fontWeight:700, color: score > 7 ? COLORS.danger : COLORS.success}}>{score}/15</span>
+          </div>
+          <div className="risk-score-progress">
+            <div className="risk-score-fill" style={{width: (score/15*100)+'%', background: score > 7 ? COLORS.danger : COLORS.success}} />
+          </div>
         </div>
       </Card>
-    </div>
+      
+      <Card>
+        <label className="form-label mb-10 d-block">Notes cliniques</label>
+        <textarea className="form-textarea" value={form.notes} onChange={e=>up('notes',e.target.value)} rows={3} placeholder="Observations divers..."/>
+      </Card>
+
+      <div className="flex justify-end gap-12 mt-20 no-print">
+        <Button type="submit" icon={<Icon.Save/>} disabled={!isValid}>
+          {patient ? "Enregistrer les modifications" : "Créer le dossier patient"}
+        </Button>
+      </div>
+    </form>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// PATIENT DETAIL
+// ONGLET MESURES
 // ═══════════════════════════════════════════════════════════════════
 
-const TABS = [
-  { id: "overview", label: "Vue d'ensemble", icon: Activity },
-  { id: "measurements", label: "Mesures", icon: Ruler },
-  { id: "treatments", label: "Traitements", icon: Shield },
-  { id: "chart", label: "Graphique", icon: BarChart3 },
-];
+function MeasurementsTab({ sorted, patient, onAdd, onDelete }) {
+  const [showAdd, setShowAdd] = useState(false);
+  const [nm, setNm] = useState({ date: new Date().toISOString().split('T')[0], alOD: "", alOG: "", notes: "" });
 
-const RISK_FACTORS_CONFIG = [
-  { key: "familyHistory", label: "ATCD familiaux", icon: Users, getValue: (rf) => rf?.familyHistory === "2" ? "2 parents" : rf?.familyHistory === "1" ? "1 parent" : "Aucun", isRisk: (rf) => rf?.familyHistory !== "0" },
-  { key: "asianOrigin", label: "Origine asiatique", icon: Globe, getValue: (rf) => rf?.asianOrigin ? "Oui" : "Non", isRisk: (rf) => rf?.asianOrigin },
-  { key: "screenTime", label: "Temps d'écran", icon: Smartphone, getValue: (rf) => rf?.screenTime === "high" ? "> 3h/j" : rf?.screenTime === "moderate" ? "1-3h/j" : "< 1h/j", isRisk: (rf) => rf?.screenTime === "high" },
-  { key: "outdoorTime", label: "Temps extérieur", icon: Sun, getValue: (rf) => rf?.outdoorTime === "low" ? "< 1h/j" : rf?.outdoorTime === "moderate" ? "1-2h/j" : "> 2h/j", isRisk: (rf) => rf?.outdoorTime === "low" },
-  { key: "nearWork", label: "Travail de près", icon: Eye, getValue: (rf) => rf?.nearWork === "high" ? "Intensif" : rf?.nearWork === "moderate" ? "Modéré" : "Faible", isRisk: (rf) => rf?.nearWork === "high" },
-  { key: "earlyOnset", label: "Début précoce", icon: Baby, getValue: (rf) => rf?.earlyOnset ? "Oui (< 7 ans)" : "Non", isRisk: (rf) => rf?.earlyOnset },
-];
-
-function PatientDetail({
-  patient,
-  onEdit,
-  onDelete,
-  onAddMeasurement,
-  onEditMeasurement,
-  onDeleteMeasurement,
-}) {
-  const [showAddMeasure, setShowAddMeasure] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const age = useMemo(() => calculateAge(patient.birthDate), [patient.birthDate]);
-
-  const sorted = useMemo(
-    () => sortMeasurements(patient.measurements),
-    [patient.measurements]
-  );
-
-  const lastMeasurement = sorted.length > 0 ? sorted[sorted.length - 1] : null;
-
-  const growthRate = useMemo(() => calculateGrowthRate(sorted), [sorted]);
-  const risk = useMemo(() => getRiskLevel(growthRate), [growthRate]);
-  const riskScore = useMemo(() => calculateRiskScore(patient), [patient]);
-
-  const recommendations = useMemo(
-    () => getRecommendedTreatments(patient, sorted),
-    [patient, sorted]
-  );
-
-  const handleAddMeasure = useCallback(
-    (m) => { onAddMeasurement(m); setShowAddMeasure(false); },
-    [onAddMeasurement]
-  );
-
-  const riskColor = riskScore >= 8 ? COLORS.danger : riskScore >= 5 ? COLORS.warning : COLORS.success;
-
-  const shareUrl = `https://myopee.com/${patient.patientId}`;
-
-  const handleCopyLink = useCallback(() => {
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [shareUrl]);
-
-  const handlePrint = useCallback(() => {
-    window.print();
-  }, []);
+  const handleAdd = () => {
+    const od = parseFloat(nm.alOD), og = parseFloat(nm.alOG);
+    if (!nm.date || (isNaN(od) && isNaN(og))) return;
+    const al = Math.max(od||0, og||0);
+    onAdd({ ...nm, id: generateId(), al, alOD: od||null, alOG: og||null });
+    setNm({ date: new Date().toISOString().split('T')[0], alOD: "", alOG: "", notes: "" });
+    setShowAdd(false);
+  };
 
   return (
     <div>
-      <div className="flex gap-8 mb-16 justify-end flex-wrap">
-        <Button onClick={onEdit} icon={<Edit3 size={16} />}>Modifier</Button>
-        <Button onClick={handlePrint} icon={<Printer size={16} />}>Imprimer</Button>
-        <Button onClick={handleCopyLink} icon={copied ? <Check size={16} /> : <Share2 size={16} />}>
-          {copied ? "Copié !" : "Partager"}
+      <div className="flex justify-between items-center mb-10 no-print">
+        <h3 className="card-title">Historique</h3>
+        <Button size="sm" onClick={() => setShowAdd(!showAdd)} icon={showAdd ? <Icon.X/> : <Icon.Plus/>}>
+          {showAdd ? "Annuler" : "Ajouter"}
         </Button>
-        {!confirmDelete ? (
-          <Button
-            variant="danger" size="sm"
-            onClick={() => setConfirmDelete(true)}
-            icon={<Trash2 size={14} />}
-          >
-            Supprimer
-          </Button>
-        ) : (
-          <div className="flex gap-4">
-            <Button variant="danger" size="sm" onClick={onDelete}>Confirmer</Button>
-            <Button variant="secondary" size="sm" onClick={() => setConfirmDelete(false)}>Annuler</Button>
-          </div>
-        )}
       </div>
 
-      <Card className="card--highlight mb-20">
-        <div className="flex justify-between items-start flex-wrap gap-12">
-          <div className="flex gap-16 items-center">
-            <div className="avatar avatar--lg">
-              {patient.initials || "?"}
-            </div>
-            <div>
-              <h2 style={{ fontSize: 24, fontWeight: 700 }}>
-                {patient.initials}{" "}
-                <span style={{ fontSize: 15, color: "#94a3b8", fontWeight: 400, fontFamily: "monospace" }}>
-                  {patient.patientId}
-                </span>
-              </h2>
-              <div className="flex gap-16 flex-wrap mt-6" style={{ fontSize: 14, color: "#64748b" }}>
-                <span className="flex items-center gap-4">
-                  <Calendar size={14} /> {age} ans ({patient.gender === "F" ? "F" : "M"})
-                </span>
-                <span className="flex items-center gap-4">
-                  <Baby size={14} /> Né(e) en {parseBirthMonth(patient.birthDate).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
-                </span>
-                {patient.surgeon && (
-                  <span className="flex items-center gap-4">
-                    <User size={14} /> {patient.surgeon}
-                  </span>
-                )}
-                {patient.riskFactors?.currentRefraction && (
-                  <span className="flex items-center gap-4">
-                    <Eye size={14} /> {patient.riskFactors.currentRefraction} D
-                  </span>
-                )}
-              </div>
-            </div>
+      {showAdd && (
+        <Card className="no-print" style={{borderColor:COLORS.primary, background: COLORS.primary+'05'}}>
+          <div className="form-grid mb-10">
+            <Input label="Date *" type="date" value={nm.date} onChange={v=>setNm(p=>({...p,date:v}))} required />
+            <Input label="LA OD (mm) *" type="number" value={nm.alOD} onChange={v=>setNm(p=>({...p,alOD:v}))} step="0.01" placeholder="24.50" />
+            <Input label="LA OG (mm)" type="number" value={nm.alOG} onChange={v=>setNm(p=>({...p,alOG:v}))} step="0.01" placeholder="24.48" />
           </div>
-        </div>
-
-        <div className="flex items-center gap-8 mt-16" style={{ padding: "10px 14px", background: "#f1f5f9", borderRadius: 8 }}>
-          <span style={{ fontSize: 13, color: "#64748b", flexShrink: 0 }}>Lien patient :</span>
-          <code style={{ fontSize: 14, color: COLORS.primary, fontWeight: 600, flex: 1, wordBreak: "break-all" }}>{shareUrl}</code>
-          <button
-            onClick={handleCopyLink}
-            aria-label="Copier le lien"
-            style={{
-              background: copied ? COLORS.success : COLORS.primary,
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "6px 12px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              fontSize: 13,
-              fontWeight: 600,
-              transition: "background 0.2s",
-              flexShrink: 0,
-            }}
-          >
-            {copied ? <><Check size={14} /> Copié</> : <><Share2 size={14} /> Copier</>}
-          </button>
-        </div>
-      </Card>
-
-      <div className="stats-row mb-20">
-        <StatCard
-          label="Dernière LA"
-          value={lastMeasurement ? `${lastMeasurement.al} mm` : "—"}
-          icon={<Ruler size={20} color={COLORS.primary} />}
-          color={COLORS.primary}
-          subtitle={lastMeasurement ? new Date(lastMeasurement.date + "T00:00:00").toLocaleDateString("fr-FR") : "Aucune mesure"}
-        />
-        <StatCard
-          label="Croissance"
-          value={growthRate !== null ? `${growthRate.toFixed(2)} mm/an` : "—"}
-          icon={<Activity size={20} color={risk.color} />}
-          color={risk.color}
-          subtitle={risk.label}
-        />
-        <StatCard
-          label="Score risque"
-          value={`${riskScore}/15`}
-          icon={<AlertTriangle size={20} color={riskColor} />}
-          color={riskColor}
-          subtitle={riskScore < 4 ? "Faible" : riskScore < 7 ? "Modéré" : riskScore < 10 ? "Élevé" : "Très élevé"}
-        />
-        <StatCard
-          label="Mesures"
-          value={sorted.length}
-          icon={<BarChart3 size={20} color={COLORS.info} />}
-          color={COLORS.info}
-        />
-      </div>
-
-      {lastMeasurement && lastMeasurement.al >= 26 && (
-        <div className="alert alert--danger mb-20">
-          <AlertTriangle size={24} color={COLORS.danger} />
-          <div>
-            <div className="alert__title">Attention : LA ≥ 26 mm</div>
-            <div className="alert__body">
-              Risque accru de complications à long terme (décollement rétinien, maculopathie myopique).
-              Traitement freinateur intensif recommandé.
-            </div>
-          </div>
-        </div>
-      )}
-
-      {growthRate !== null && growthRate > 0.3 && (
-        <div className="alert alert--warning mb-20">
-          <Zap size={24} color={COLORS.warning} />
-          <div>
-            <div className="alert__title">Progression rapide détectée</div>
-            <div className="alert__body">
-              Croissance de {growthRate.toFixed(2)} mm/an. Envisager une intensification
-              thérapeutique (combinaison de traitements).
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="tabs mb-20">
-        {TABS.map((tab) => {
-          const TabIcon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              className={`tab-btn ${activeTab === tab.id ? "tab-btn--active" : ""}`}
-              onClick={() => setActiveTab(tab.id)}
-              aria-selected={activeTab === tab.id}
-              role="tab"
-            >
-              <TabIcon size={16} /> {tab.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {activeTab === "overview" && (
-        <Card>
-          <h3 className="flex items-center gap-8 mb-16" style={{ fontSize: 16, fontWeight: 600 }}>
-            <AlertTriangle size={18} color={COLORS.warning} /> Facteurs de risque
-          </h3>
-          <div className="grid-3">
-            {RISK_FACTORS_CONFIG.map((item) => {
-              const IconComp = item.icon;
-              const isAtRisk = item.isRisk(patient.riskFactors);
-              const value = item.getValue(patient.riskFactors);
-              return (
-                <div
-                  key={item.key}
-                  className={`risk-chip ${isAtRisk ? "risk-chip--danger" : "risk-chip--safe"}`}
-                >
-                  <IconComp size={16} color={isAtRisk ? COLORS.danger : COLORS.success} />
-                  <div>
-                    <div className="risk-chip__label">{item.label}</div>
-                    <div
-                      className="risk-chip__value"
-                      style={{ color: isAtRisk ? COLORS.danger : COLORS.success }}
-                    >
-                      {value}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {patient.notes && (
-            <div style={{ marginTop: 16, padding: 12, background: "#f8fafc", borderRadius: 8 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#64748b", marginBottom: 4 }}>Notes</div>
-              <p style={{ whiteSpace: "pre-wrap" }}>{patient.notes}</p>
-            </div>
-          )}
+          <Input label="Notes" value={nm.notes} onChange={v=>setNm(p=>({...p,notes:v}))} placeholder="RAS" />
+          <div className="flex justify-end mt-12"><Button size="sm" onClick={handleAdd} disabled={!nm.date || !(nm.alOD||nm.alOG)}>Enregistrer la mesure</Button></div>
         </Card>
       )}
 
-      {activeTab === "measurements" && (
-        <MeasurementsTab
-          sortedMeasurements={sorted}
-          patient={patient}
-          onAdd={handleAddMeasure}
-          onEdit={onEditMeasurement}
-          onDelete={onDeleteMeasurement}
-          showAdd={showAddMeasure}
-          setShowAdd={setShowAddMeasure}
-        />
-      )}
-
-      {activeTab === "treatments" && (
-        <TreatmentsTab recommendations={recommendations} />
-      )}
-
-      {activeTab === "chart" && (
-        <ChartTab sortedMeasurements={sorted} patient={patient} />
-      )}
+      {sorted.length === 0 ? <div className="empty-state">Aucune mesure enregistrée.</div> : 
+        [...sorted].reverse().map((m,i,arr) => {
+          const prev = i < arr.length - 1 ? arr[i+1] : null;
+          const ageAt = calculateAgeAtDate(patient.birthDate, m.date);
+          const diff = prev ? m.al - prev.al : null;
+          return (
+            <div key={m.id} className="measure-item">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="measure-date">{new Date(m.date).toLocaleDateString('fr-FR')}</span>
+                  <span className="measure-age">{ageAt.toFixed(1)} ans</span>
+                  <div className="measure-values">
+                    <span>OD: <strong>{m.alOD?.toFixed(2)||'—'}</strong> mm</span>
+                    <span>OG: <strong>{m.alOG?.toFixed(2)||'—'}</strong> mm</span>
+                  </div>
+                  {diff !== null && (
+                    <div className="growth-indicator" style={{color: diff > 0.1 ? COLORS.danger : COLORS.success}}>
+                      Evolution: {diff > 0 ? '+':''}{diff.toFixed(2)} mm
+                    </div>
+                  )}
+                  {m.notes && <div style={{fontSize:12, color:COLORS.textLight, marginTop:5, fontStyle:'italic'}}>{m.notes}</div>}
+                </div>
+                <button className="no-print" onClick={()=>onDelete(m.id)} style={{background:'none', border:'none', color:COLORS.textLight, cursor:'pointer'}}><Icon.Trash size={14}/></button>
+              </div>
+            </div>
+          )
+        })
+      }
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// AUTHENTICATION COMPONENT
+// ONGLET GRAPHIQUE
 // ═══════════════════════════════════════════════════════════════════
 
-function Auth({ apiUrl }) {
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(null);
+function ChartTab({ sorted, patient }) {
+  const data = useMemo(() => sorted.map(m => {
+    const age = calculateAgeAtDate(patient.birthDate, m.date);
+    const norm = AL_NORMS[Math.min(18, Math.max(6, Math.round(age)))] || AL_NORMS[6];
+    return {
+      age: parseFloat(age.toFixed(1)), al: m.al, alOD: m.alOD, alOG: m.alOG,
+      emmetropic: norm.emmetropic, p75: norm.p75, p90: norm.p90,
+      dateStr: new Date(m.date).toLocaleDateString('fr-FR', {month:'short', year:'2-digit'})
+    };
+  }), [sorted, patient.birthDate]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage(null);
+  if (data.length < 1) return <div className="empty-state">Ajoutez au moins une mesure pour voir le graphique.</div>;
 
-    try {
-      const res = await fetch(`${apiUrl}/login.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) throw new Error(data.error || 'Erreur inconnue');
-      
-      setMessage({ type: 'success', text: 'Vérifiez vos emails ! Un lien magique vous a été envoyé.' });
-    } catch (err) {
-      setMessage({ type: 'danger', text: err.message });
-    }
-    setLoading(false);
+  return (
+    <ResponsiveContainer width="100%" height={400}>
+      <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+        <XAxis dataKey="age" type="number" domain={[5, 19]} ticks={[6,8,10,12,14,16,18]} label={{ value: 'Âge (ans)', position: 'insideBottom', offset: -5 }} />
+        <YAxis domain={['dataMin - 0.5', 'dataMax + 0.5']} label={{ value: 'LA (mm)', angle: -90, position: 'insideLeft' }} />
+        <Tooltip formatter={(value, name) => [value+' mm', name]} labelFormatter={(value) => value + ' ans'} />
+        <Legend wrapperStyle={{fontSize:12, paddingTop:10}} />
+        <ReferenceLine y={26} stroke={COLORS.danger} strokeDasharray="3 3" label={{value:'Seuil LA 26mm', fill:COLORS.danger, fontSize:10, position:'insideTopRight'}} />
+        
+                <Line name="P75" dataKey="p75" stroke={COLORS.warning} strokeDasharray="5 5" dot={false} connectNulls />
+        <Line name="Norme Emmétrope" dataKey="emmetropic" stroke={COLORS.success} strokeDasharray="5 5" dot={false} connectNulls />
+        
+        <Line name="LA" dataKey="al" stroke={COLORS.primary} strokeWidth={3} dot={{r:6}} activeDot={{r:8}} connectNulls />
+        {data.some(d=>d.alOD && d.alOG) && (
+          <>
+            <Line name="LA OD" dataKey="alOD" stroke="#f97316" strokeWidth={1} dot={{r:3}} connectNulls />
+            <Line name="LA OG" dataKey="alOG" stroke="#06b6d4" strokeWidth={1} dot={{r:3}} connectNulls />
+          </>
+        )}
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ONGLET TRAITEMENTS
+// ═══════════════════════════════════════════════════════════════════
+
+function TreatmentsTab({ recommendations }) {
+  if (recommendations.length === 0) return <div className="empty-state">Pas de recommandation spécifique.</div>;
+  return (
+    <div>
+      <div className="alert alert-info no-print">
+        <Icon.Info/>
+        <div>Ces suggestions automatisées se basent sur les données saisies et ne remplacent pas le jugement clinique du praticien.</div>
+      </div>
+      {recommendations.map((r,i) => (
+        <div key={i} className="treatment-card" style={{borderColor: r.priority === 1 ? COLORS.danger : r.color}}>
+          <div className="treatment-header">
+            <div className="treatment-info">
+              <span className="treatment-icon">{r.icon}</span>
+              <div>
+                <div className="treatment-name">{r.name}</div>
+                <div className="treatment-efficacy">{r.efficacy}</div>
+              </div>
+            </div>
+            {r.priority === 1 && <Badge color={COLORS.danger}>Priorité forte</Badge>}
+          </div>
+          <div className="treatment-reason">Motif : {r.reason}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DÉTAIL PATIENT (DASHBOARD)
+// ═══════════════════════════════════════════════════════════════════
+
+const TABS = [
+  { id: 'overview', label: "Vue d'ensemble", icon: <Icon.Activity/> },
+  { id: 'measurements', label: "Mesures", icon: <Icon.Ruler/> },
+  { id: 'chart', label: "Graphique", icon: <Icon.Chart/> },
+  { id: 'treatments', label: "Traitements", icon: <Icon.Shield/> }
+];
+
+function PatientDetail({ patient, onUpdate, onEditClick }) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const sorted = useMemo(() => sortMeasurements(patient.measurements), [patient.measurements]);
+  const latest = sorted.length > 0 ? sorted[sorted.length-1] : null;
+  const growth = useMemo(() => calculateGrowthRate(sorted), [sorted]);
+  const riskScore = useMemo(() => calculateRiskScore(patient), [patient]);
+  const recs = useMemo(() => getRecommendedTreatments(patient, sorted), [patient, sorted]);
+
+  const age = calculateAge(patient.birthDate);
+  const risk = getRiskLevel(growth);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopySuccess(true); setTimeout(() => setCopySuccess(false), 2000);
+    });
+  };
+
+  const addMeasure = (m) => {
+    const updated = {...patient, measurements: sortMeasurements([...(patient.measurements||[]), m])};
+    onUpdate(updated);
+  };
+
+  const deleteMeasure = (id) => {
+    const updated = {...patient, measurements: (patient.measurements||[]).filter(m => m.id !== id)};
+    onUpdate(updated);
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: 20 }}>
-      <Card style={{ maxWidth: 400, width: '100%' }}>
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div className="avatar avatar--lg" style={{ margin: '0 auto 16px', background: 'var(--c-primary)' }}>👁️</div>
-          <h2 style={{ fontSize: 24, fontWeight: 700 }}>MyopiaControl</h2>
-          <p style={{ color: 'var(--c-text-light)', fontSize: 14 }}>Connexion sécurisée pour les praticiens</p>
+    <div>
+      <div className="flex justify-between items-center mb-10 wrap gap-12 no-print">
+        <h2 style={{fontSize:22, fontWeight:700}}>Dossier Patient</h2>
+        <div className="flex gap-8 wrap">
+          <Button variant="secondary" size="sm" onClick={handleCopyLink} icon={copySuccess ? <Icon.Check/> : <Icon.Copy/>}>
+            {copySuccess ? "Lien copié !" : "Copier le lien unique"}
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => window.print()} icon={<Icon.Printer/>}>Imprimer</Button>
+          <Button variant="primary" size="sm" onClick={onEditClick} icon={<Icon.Edit/>}>Modifier fiche</Button>
         </div>
+      </div>
 
-        {message && (
-          <div className={`alert alert--${message.type} mb-16`}>
-            <div className="alert__body">{message.text}</div>
+      <Card className="patient-header">
+        <div className="flex items-center gap-16 wrap">
+          <div className="avatar">{patient.initials}</div>
+          <div>
+            <div className="flex items-center gap-12 wrap mb-10">
+              <span style={{fontSize:22,fontWeight:700}}>{patient.initials}</span>
+              <span className="patient-id-badge">{patient.patientId}</span>
+              <Badge color={COLORS.primary}>{age} ans</Badge>
+              <Badge color={patient.gender === 'F' ? '#db2777' : '#0284c7'}>{patient.gender==='F'?'Fém':'Masc'}</Badge>
+            </div>
+            <div style={{fontSize:13,color:COLORS.textLight}}>
+              <Icon.Calendar size={12}/> Né(e) en {parseBirthMonth(patient.birthDate).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}
+              {patient.surgeon && ` • Praticien: ${patient.surgeon}`}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="stats-grid">
+        <StatCard label="Dernière LA" value={latest ? latest.al.toFixed(2)+' mm' : '—'} icon={<Icon.Ruler color={COLORS.primary}/>} color={COLORS.primary} subtitle={latest ? new Date(latest.date).toLocaleDateString('fr-FR') : 'Aucune mesure'} />
+        <StatCard label="Croissance axiale" value={growth !== null ? growth.toFixed(2)+' mm/an' : '—'} icon={<Icon.Activity color={risk.color}/>} color={risk.color} subtitle={risk.label} />
+        <StatCard label="Score de risque" value={`${riskScore}/15`} icon={<Icon.Alert color={riskScore > 7 ? COLORS.danger : COLORS.success}/>} color={riskScore > 7 ? COLORS.danger : COLORS.success} />
+      </div>
+
+      {latest && latest.al > 26 && (
+        <div className="alert alert-danger">
+          <Icon.Alert className="alert-icon"/>
+          <div>
+            <div className="alert-title">Vigilance : Longueur Axiale > 26mm</div>
+            <div className="alert-body">Risque élevé de complications pathologiques (maculopathie, décollement). Un suivi rapproché et une freination intensive sont requis.</div>
+          </div>
+        </div>
+      )}
+
+      {growth && growth > 0.2 && (
+        <div className="alert alert-warning">
+          <Icon.Zap className="alert-icon"/>
+          <div>
+            <div className="alert-title">Progression rapide détectée</div>
+            <div className="alert-body">Évolution de {growth.toFixed(2)} mm/an. Envisager une intensification ou une combinaison de traitements.</div>
+          </div>
+        </div>
+      )}
+
+      <div className="tabs no-print">
+        {TABS.map(t => (
+          <button key={t.id} className={`tab-btn ${activeTab===t.id?'tab-btn--active':''}`} onClick={()=>setActiveTab(t.id)}>
+            {t.icon}{t.label}
+          </button>
+        ))}
+      </div>
+
+      <Card>
+        {activeTab === 'overview' && (
+          <div>
+            <h3 className="card-title mb-16">Profil de risque</h3>
+            <div className="risk-grid">
+              <RiskItem label="ATCD familiaux" value={patient.riskFactors.familyHistory==="2"?"2 parents":patient.riskFactors.familyHistory==="1"?"1 parent":"Aucun"} isHigh={patient.riskFactors.familyHistory!=="0"} icon="👨‍👩‍👧" />
+              <RiskItem label="Origine asiatique" value={patient.riskFactors.asianOrigin?"Oui":"Non"} isHigh={patient.riskFactors.asianOrigin} icon="🌏" />
+              <RiskItem label="Temps d'écran" value={patient.riskFactors.screenTime==="high"?">3h/j":patient.riskFactors.screenTime==="moderate"?"1-3h/j":"<1h/j"} isHigh={patient.riskFactors.screenTime==="high"} icon="📱" />
+              <RiskItem label="Temps extérieur" value={patient.riskFactors.outdoorTime==="low"?"<1h/j":patient.riskFactors.outdoorTime==="moderate"?"1-2h/j":">2h/j"} isHigh={patient.riskFactors.outdoorTime==="low"} icon="☀️" />
+              <RiskItem label="Début précoce" value={patient.riskFactors.earlyOnset?"Oui (<7ans)":"Non"} isHigh={patient.riskFactors.earlyOnset} icon="👶" />
+            </div>
+            {patient.notes && (
+              <div style={{marginTop:20, padding:15, background:'#f8fafc', borderRadius:10, fontSize:14}}>
+                <strong style={{display:'block',marginBottom:5, color:COLORS.textLight}}>Notes cliniques:</strong>
+                <p style={{whiteSpace:'pre-wrap'}}>{patient.notes}</p>
+              </div>
+            )}
           </div>
         )}
-
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <Input 
-            label="Email professionnel" 
-            type="email" 
-            value={email} 
-            onChange={setEmail} 
-            placeholder="docteur@cabinet.fr" 
-            required 
-          />
-          <Button 
-            disabled={loading || !email} 
-            style={{ justifyContent: 'center', marginTop: 8 }}
-          >
-            {loading ? 'Envoi en cours...' : 'Recevoir le lien magique'}
-          </Button>
-        </form>
+        {activeTab === 'measurements' && <MeasurementsTab sorted={sorted} patient={patient} onAdd={addMeasure} onDelete={deleteMeasure} />}
+        {activeTab === 'chart' && <ChartTab sorted={sorted} patient={patient} />}
+        {activeTab === 'treatments' && <TreatmentsTab recommendations={recs} />}
       </Card>
     </div>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// DISCLAIMER
-// ═══════════════════════════════════════════════════════════════════
-
-function Disclaimer() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="disclaimer">
-      <div className="disclaimer__title">
-        <Info size={18} color="#6366f1" />
-        Conditions d'utilisation
-      </div>
-      <div className="disclaimer__text">
-        <p>
-          Cet outil est conçu comme un complément aux diagnostics ophtalmologiques,
-          aidant les médecins à choisir le traitement freinateur de myopie le plus
-          adapté à chaque patient. Il doit être utilisé en complément d'un examen
-          ophtalmologique complet et des tests diagnostiques et mesures nécessaires
-          pour les candidats aux traitements freinateurs.
-        </p>
-        {open && (
-          <>
-            <p>
-              Les résultats obtenus par le calculateur ne constituent ni une
-              recommandation médicale. Les médecins utilisant cet outil doivent
-              prendre leurs propres décisions quant au traitement approprié pour
-              leurs patients et sont seuls responsables du résultat.
-            </p>
-            <p>
-              En utilisant cet outil, vous acceptez d'indemniser et de dégager de
-              toute responsabilité ce site (ainsi que ses administrateurs, directeurs,
-              employés et prestataires tiers) pour tous dommages, coûts, réclamations
-              et pertes pouvant survenir directement ou indirectement du fait de votre
-              utilisation de l'outil, que ce soit conformément aux présentes conditions
-              ou non.
-            </p>
-            <p>
-              Dans toute la mesure permise par la loi, nous déclinons toute condition,
-              garantie et déclaration implicite quant à la qualité satisfaisante,
-              l'exactitude, l'adéquation à un usage particulier ou l'absence de
-              contrefaçon de l'Outil et des résultats ou données obtenus par son
-              intermédiaire.
-            </p>
-          </>
-        )}
-        <button className="disclaimer__toggle" onClick={() => setOpen(!open)}>
-          {open ? "Réduire ▲" : "Lire la suite ▼"}
-        </button>
-      </div>
+const RiskItem = ({ label, value, isHigh, icon }) => (
+  <div className={`risk-item ${isHigh ? 'risk-item--high' : 'risk-item--low'}`}>
+    <span className="risk-item__icon">{icon}</span>
+    <div>
+      <div className="risk-item__label">{label}</div>
+      <div className="risk-item__value">{value}</div>
     </div>
-  );
-}
+  </div>
+);
+
 
 // ═══════════════════════════════════════════════════════════════════
-// APP ROOT
+// APPLICATION PRINCIPALE (ROOT)
 // ═══════════════════════════════════════════════════════════════════
 
 function App() {
-  const [jwt, setJwt] = useState(null);
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [view, setView] = useState('loading'); // loading, welcome, add, detail, edit, error
+  const [patient, setPatient] = useState(null);
+  const [error, setError] = useState(null);
 
-  const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  
-  const getPatientIdFromURL = useCallback(() => {
+  // Analyse de l'URL au chargement et aux changements de navigation
+  const checkUrlAndLoadPatient = useCallback(async () => {
     const path = window.location.pathname.replace(/^\/+/, "");
-    return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
-  }, []);
+    // Format attendu: XXX-XXXX-XXX (insensible à la casse)
+    const pid = /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/i.test(path) ? path.toUpperCase() : null;
 
-  const [currentView, setCurrentView] = useState("list");
-  const [selectedId, setSelectedId] = useState(null);
-
-  // 1. GESTION DE LA CONNEXION (MAGIC LINK & JWT)
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    const email = urlParams.get('email');
-
-    if (token && email) {
-      // Retour du clic sur l'email : On valide avec OVH
-      setIsInitializing(true);
-      fetch(`${API_URL}/verify.php?token=${token}&email=${encodeURIComponent(email)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.token) {
-            localStorage.setItem('myopee_jwt', data.token); // Sauvegarde le badge
-            setJwt(data.token);
-            // Nettoie l'URL pour la rendre propre
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } else {
-            console.error("Token invalide", data.error);
-            alert("Ce lien de connexion est invalide ou expiré.");
-          }
-        })
-        .finally(() => setIsInitializing(false));
-    } else {
-      // Déjà connecté précédemment ?
-      const storedToken = localStorage.getItem('myopee_jwt');
-      if (storedToken) setJwt(storedToken);
-      setIsInitializing(false);
-    }
-  }, []);
-
-  // Fonction utilitaire pour parler à l'API OVH avec le badge JWT
-  const apiFetch = useCallback(async (endpoint, options = {}) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwt}`, // Présentation du badge au vigile
-      ...(options.headers || {})
-    };
-    
-    const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
-    
-    if (res.status === 401) {
-      // Si le badge est périmé, on déconnecte
-      setJwt(null);
-      localStorage.removeItem('myopee_jwt');
-      throw new Error("Session expirée");
-    }
-    
-    return res.json();
-  }, [jwt]);
-
-  // 2. CHARGEMENT DES PATIENTS DEPUIS OVH
-  useEffect(() => {
-    if (!jwt) return;
-
-    const fetchPatients = async () => {
-      setLoading(true);
+    if (pid) {
+      setView('loading');
       try {
-        const data = await apiFetch('/patients.php');
-        if (Array.isArray(data)) {
-          setPatients(data);
-          
-          // Routage initial si un ID est dans l'URL
-          const initialPatientId = getPatientIdFromURL();
-          if (initialPatientId) {
-            const found = data.find((p) => p.patientId === initialPatientId);
-            if (found) {
-              setSelectedId(found.id);
-              setCurrentView("detail");
-            }
-          }
+        const response = await fetch(`${API_URL}/patients.php?pid=${pid}`);
+        if (!response.ok) {
+          if (response.status === 404) throw new Error("Dossier introuvable");
+          throw new Error("Erreur serveur lors du chargement");
         }
+        const data = await response.json();
+        setPatient(data);
+        setView('detail');
       } catch (err) {
-        console.error("Erreur de chargement :", err);
+        console.error(err);
+        setError(err.message);
+        setView('error');
       }
-      setLoading(false);
-    };
-
-    fetchPatients();
-  }, [jwt, apiFetch, getPatientIdFromURL]);
-
-  const handleLogout = () => {
-    setJwt(null);
-    localStorage.removeItem('myopee_jwt');
-  };
-
-  const pushPatientURL = useCallback((patientId) => {
-    if (patientId) {
-      window.history.pushState({ patientId }, "", "/" + patientId);
     } else {
-      window.history.pushState({}, "", "/");
+      // Pas d'ID dans l'URL -> affichage page d'accueil/disclaimer
+      setPatient(null);
+      setError(null);
+      setView('welcome');
     }
   }, []);
 
   useEffect(() => {
-    const onPopState = (e) => {
-      const pid = e.state?.patientId || getPatientIdFromURL();
-      if (pid) {
-        const found = patients.find((p) => p.patientId === pid);
-        if (found) {
-          setSelectedId(found.id);
-          setCurrentView("detail");
-          return;
-        }
-      }
-      setSelectedId(null);
-      setCurrentView("list");
-    };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, [patients, getPatientIdFromURL]);
+    checkUrlAndLoadPatient();
+    // Ecouter les boutons retour/avancé du navigateur
+    window.addEventListener("popstate", checkUrlAndLoadPatient);
+    return () => window.removeEventListener("popstate", checkUrlAndLoadPatient);
+  }, [checkUrlAndLoadPatient]);
 
-  const selectedPatient = useMemo(
-    () => patients.find((p) => p.id === selectedId) || null,
-    [patients, selectedId]
-  );
+  // Actions
+  const handleAcceptDisclaimer = () => setView('add');
 
-  const filteredPatients = useMemo(() => {
-    const q = searchTerm.toLowerCase();
-    if (!q) return patients;
-    return patients.filter(
-      (p) =>
-        ((p.initials || "") + " " + (p.patientId || "") + " " + (p.surgeon || "")).toLowerCase().includes(q)
-    );
-  }, [patients, searchTerm]);
-
-  // ─── CRUD OVH ───
-
-  const addPatient = useCallback(async (data) => {
-    const patientId = data.patientId || generatePatientId();
-    const id = generateId();
-    const newPatient = { ...data, id, patientId, measurements: [], createdAt: new Date().toISOString() };
+  const handleCreatePatient = async (formData) => {
+    setView('loading');
+    const patientId = generatePatientId();
+    const id = generateId(); // ID technique interne
+    const newPatient = { ...formData, id, patientId, measurements: [] };
     
-    // Mise à jour immédiate de l'écran
-    setPatients((prev) => [...prev, newPatient]);
-    setSelectedId(id);
-    setCurrentView("detail");
-    pushPatientURL(patientId);
-
-    // Sauvegarde en arrière-plan sur OVH
     try {
-      await apiFetch('/patients.php', {
+      const response = await fetch(`${API_URL}/patients.php`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPatient)
       });
+      if (!response.ok) throw new Error("Erreur lors de la création du dossier");
+      
+      setPatient(newPatient);
+      // Mise à jour de l'URL sans recharger la page
+      window.history.pushState({}, "", "/" + patientId);
+      setView('detail');
     } catch (err) {
-      console.error("Erreur d'ajout :", err);
+      alert(err.message);
+      setView('add'); // Retour au formulaire
     }
-  }, [pushPatientURL, apiFetch]);
+  };
 
-  const updatePatient = useCallback(async (updated) => {
-    setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    
+  const handleUpdatePatient = async (updatedData) => {
+    // Mise à jour optimiste de l'UI
+    const oldPatient = patient;
+    setPatient(updatedData);
+
     try {
-      await apiFetch(`/patients.php?id=${updated.id}`, {
+      const response = await fetch(`${API_URL}/patients.php?pid=${updatedData.patientId}`, {
         method: 'PUT',
-        body: JSON.stringify(updated)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
       });
+      if (!response.ok) throw new Error("Erreur lors de la sauvegarde");
+      // Si édition de la fiche d'identité réussie, retour au détail
+      if (view === 'edit') setView('detail');
     } catch (err) {
-      console.error("Erreur de mise à jour :", err);
+      alert(err.message);
+      setPatient(oldPatient); // Rollback en cas d'erreur
     }
-  }, [apiFetch]);
-
-  const deletePatient = useCallback(async (id) => {
-    setPatients((prev) => prev.filter((p) => p.id !== id));
-    setSelectedId(null);
-    setCurrentView("list");
-    pushPatientURL(null);
-
-    try {
-      await apiFetch(`/patients.php?id=${id}`, {
-        method: 'DELETE'
-      });
-    } catch (err) {
-      console.error("Erreur de suppression :", err);
-    }
-  }, [pushPatientURL, apiFetch]);
-
-  const addMeasurement = useCallback((patientId, measurement) => {
-    setPatients((prev) => {
-      const patient = prev.find(p => p.id === patientId);
-      if (!patient) return prev;
-      const newMeasurements = sortMeasurements([
-        ...(patient.measurements || []),
-        { ...measurement, id: generateId() },
-      ]);
-      const updatedPatient = { ...patient, measurements: newMeasurements };
-      updatePatient(updatedPatient);
-      return prev.map(p => p.id === patientId ? updatedPatient : p);
-    });
-  }, [updatePatient]);
-
-  const editMeasurement = useCallback((patientId, updatedMeasurement) => {
-    setPatients((prev) => {
-      const patient = prev.find(p => p.id === patientId);
-      if (!patient) return prev;
-      const updatedList = (patient.measurements || []).map((m) =>
-        m.id === updatedMeasurement.id ? updatedMeasurement : m
-      );
-      const updatedPatient = { ...patient, measurements: sortMeasurements(updatedList) };
-      updatePatient(updatedPatient);
-      return prev.map(p => p.id === patientId ? updatedPatient : p);
-    });
-  }, [updatePatient]);
-
-  const deleteMeasurement = useCallback((patientId, measurementId) => {
-    setPatients((prev) => {
-      const patient = prev.find(p => p.id === patientId);
-      if (!patient) return prev;
-      const updatedPatient = { 
-        ...patient, 
-        measurements: (patient.measurements || []).filter((m) => m.id !== measurementId) 
-      };
-      updatePatient(updatedPatient);
-      return prev.map(p => p.id === patientId ? updatedPatient : p);
-    });
-  }, [updatePatient]);
-
-  // ─── NAVIGATION ───
-
-  const goToList = useCallback(() => {
-    setCurrentView("list");
-    setSelectedId(null);
-    pushPatientURL(null);
-  }, [pushPatientURL]);
-
-  const goToAdd = useCallback(() => setCurrentView("add"), []);
-
-  const goToDetail = useCallback((patient) => {
-    setSelectedId(patient.id);
-    setCurrentView("detail");
-    pushPatientURL(patient.patientId);
-  }, [pushPatientURL]);
-
-  const goToEdit = useCallback(() => setCurrentView("editPatient"), []);
-
-  const handleSaveEdit = useCallback(
-    (updated) => {
-      updatePatient({ ...selectedPatient, ...updated });
-      setCurrentView("detail");
-    },
-    [selectedPatient, updatePatient]
-  );
-
-  const handleDelete = useCallback(() => {
-    if (selectedId) deletePatient(selectedId);
-  }, [selectedId, deletePatient]);
-
-  const handleAddMeasurement = useCallback(
-    (m) => { if (selectedId) addMeasurement(selectedId, m); },
-    [selectedId, addMeasurement]
-  );
-
-  const handleEditMeasurement = useCallback(
-    (updated) => { if (selectedId) editMeasurement(selectedId, updated); },
-    [selectedId, editMeasurement]
-  );
-
-  const handleDeleteMeasurement = useCallback(
-    (mid) => { if (selectedId) deleteMeasurement(selectedId, mid); },
-    [selectedId, deleteMeasurement]
-  );
-
-  if (isInitializing) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#64748b' }}>Chargement de l'environnement sécurisé...</div>;
-  }
-
-  if (!jwt) {
-    return <Auth apiUrl={API_URL} />;
-  }
+  };
 
   return (
     <div className="app-root">
-      <header className="app-header">
-        <div className="app-header__brand">
-          <div className="app-header__icon">👁️</div>
-          <div>
-            <h1 className="app-header__title">MyopiaControl</h1>
-            <p className="app-header__subtitle">
-              Suivi de la myopie & traitements freinateurs
-            </p>
-          </div>
-        </div>
-        <div className="app-header__actions">
-          {currentView !== "list" && (
-            <Button
-              className="btn--header"
-              variant="ghost"
-              size="sm"
-              onClick={goToList}
-              icon={<ArrowLeft size={16} color="#fff" />}
-            >
-              Patients
-            </Button>
-          )}
-          {currentView === "list" && (
-            <Button
-              className="btn--header"
-              variant="ghost"
-              size="sm"
-              onClick={goToAdd}
-              icon={<Plus size={16} color="#fff" />}
-            >
-              Nouveau patient
-            </Button>
-          )}
-          <Button
-            className="btn--header"
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            style={{ marginLeft: 16 }}
-          >
-            Déconnexion
-          </Button>
-        </div>
+      <header className="app-header no-print">
+        <a href="/" className="app-header__brand">
+          <span className="app-header__icon">👁️</span>
+          <h1 className="app-header__title">MyopiaControl</h1>
+        </a>
+        <span style={{fontSize:12, opacity:0.7}}>Dr. Leconte — CHU Rouen</span>
       </header>
 
-      <main className="app-main">
-        {loading ? (
-           <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>Chargement des dossiers médicaux...</div>
-        ) : (
-          <>
-            {currentView === "list" && (
-              <PatientList
-                patients={filteredPatients}
-                searchTerm={searchTerm}
-                onSearch={setSearchTerm}
-                onSelect={goToDetail}
-                onAdd={goToAdd}
-              />
-            )}
-
-            {currentView === "add" && (
-              <PatientForm onSave={addPatient} onCancel={goToList} />
-            )}
-
-            {currentView === "editPatient" && selectedPatient && (
-              <PatientForm
-                patient={selectedPatient}
-                onSave={handleSaveEdit}
-                onCancel={() => setCurrentView("detail")}
-              />
-            )}
-
-            {currentView === "detail" && selectedPatient && (
-              <PatientDetail
-                patient={selectedPatient}
-                onEdit={goToEdit}
-                onDelete={handleDelete}
-                onAddMeasurement={handleAddMeasurement}
-                onEditMeasurement={handleEditMeasurement}
-                onDeleteMeasurement={handleDeleteMeasurement}
-              />
-            )}
-          </>
-        )}
-      </main>
-
-      <Disclaimer />
-
-      <footer className="app-footer">
-        <div className="app-footer__sources">
-          Analyses basées sur les études de freination de la myopie
-          ainsi que les pratiques du Centre de Freination de la Myopie du CHU de Rouen.
+      {view === 'loading' && <div className="app-main empty-state mt-20">Chargement sécurisé du dossier...</div>}
+      
+      {view === 'welcome' && <WelcomePage onAccept={handleAcceptDisclaimer} />}
+      
+      {view === 'error' && (
+        <div className="app-main mt-20">
+          <Card style={{borderColor:COLORS.danger, textAlign:'center'}}>
+            <Icon.Alert size={48} color={COLORS.danger} />
+            <h2 style={{color:COLORS.danger, margin:'10px 0'}}>Erreur</h2>
+            <p className="mb-10">{error}</p>
+            <Button onClick={() => window.location.href = '/'}>Retour à l'accueil</Button>
+          </Card>
         </div>
-        <div className="app-footer__copyright">
-          © {new Date().getFullYear()} Dr Leconte — CHU de Rouen
-        </div>
+      )}
+
+      {(view === 'add' || view === 'edit' || view === 'detail') && (
+        <main className="app-main">
+          {view === 'add' && <PatientForm onSave={handleCreatePatient} />}
+          {view === 'edit' && <PatientForm patient={patient} onSave={handleUpdatePatient} />}
+          {view === 'detail' && patient && (
+            <PatientDetail 
+              patient={patient} 
+              onUpdate={handleUpdatePatient} // Utilisé pour ajouter/supprimer mesures
+              onEditClick={() => setView('edit')} // Pour éditer l'identité/risques
+            />
+          )}
+        </main>
+      )}
+
+      <footer className="app-footer no-print">
+        Conditions d'utilisation acceptées. Cet outil est une aide à la décision médicale.<br/>
+        © {new Date().getFullYear()} MyopiaControl — Données hébergées en France (HDS).
       </footer>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RENDER
+// RENDER INITIAL
 // ═══════════════════════════════════════════════════════════════════
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
